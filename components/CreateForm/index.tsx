@@ -1,26 +1,54 @@
 "use client"; // Ensure this is a Client Component
 
-import { SetStateAction, useEffect, useState } from "react";
-import {
-  CoinListApiResponse,
-  coinListApiResponse,
-  CoinListData,
-} from "../../constants/coinList";
 import { coinListMetaData } from "@/constants/coinListMetadata";
+import { CREATE_FORM_TABLE_COLUMN_SIZE } from "@/constants/tableSizes";
+import { useHandleSearch } from "@/hooks/useHandleSearch";
+import AnimatedNumber from "@/shared/AnimatedNumber";
+import { BubbleDrag } from "@/shared/BubbleDrag";
 import { Datatable } from "@/shared/DataTable";
 import {
   TableHeaderField,
   TableHeaders,
   TableRows,
 } from "@/shared/DataTable/typings";
-import { useHandleSearch } from "@/hooks/useHandleSearch";
-import { CREATE_FORM_TABLE_COLUMN_SIZE } from "@/constants/tableSizes";
-import Image from "next/image";
-import AnimatedNumber from "@/shared/AnimatedNumber";
-import SearchComponent from "@/shared/Search";
 import { Modal } from "@/shared/Modal";
-import { BubbleDrag } from "@/shared/BubbleDrag";
 import PercentageChange from "@/shared/PercentageChange";
+import Image from "next/image";
+import { useState } from "react";
+import { coinListApiResponse, CoinListData } from "../../constants/coinList";
+import Checkbox from "../primitives/Checkbox";
+import ProfitLoss from "../shared/ProfitLoss";
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 4,
+});
+
+const formatMarketCap = (marketCap: number) => {
+  if (marketCap > 1_000_000_000) {
+    return (
+      (marketCap / 1_000_000_000).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2,
+      }) + "B"
+    );
+  } else if (marketCap > 1_000_000) {
+    return (
+      (marketCap / 1_000_000).toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      }) + "M"
+    );
+  } else if (marketCap > 1_000) {
+    return (
+      (marketCap / 1_000).toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      }) + "k"
+    );
+  } else {
+    return marketCap;
+  }
+};
 
 export const CreateForm = () => {
   const [input, setInput] = useState<string>("");
@@ -42,22 +70,23 @@ export const CreateForm = () => {
           className="w-5 h-5 appearance-none border border-gray-300  rounded-md mr-2 hover:border-indigo-500 hover:bg-indigo-100 checked:bg-no-repeat checked:bg-center checked:border-indigo-500 checked:bg-indigo-100"
         />
       ),
+      align: "text-start",
     },
     {
       field: TableHeaderField.CRYPTO_INFO,
-      component: "Coin Name",
+      component: "Coin",
+      align: "text-start",
+      isSearch: true,
     },
     {
       field: TableHeaderField.CRYPTO_PRICE,
       component: "Price",
+      align: "flex-auto text-end",
     },
     {
       field: TableHeaderField.MARKET_CAP,
       component: "Market Cap",
-    },
-    {
-      field: TableHeaderField.CHANGE,
-      component: "% Change",
+      align: "text-end",
     },
   ];
   const dataRows: TableRows[][] = filteredData.map((coinData) => {
@@ -65,9 +94,10 @@ export const CreateForm = () => {
       {
         field: TableHeaderField.CHECKBOX,
         component: (
-          <div
-            className={"pt-3"}
-            onClick={() => {
+          <Checkbox
+            label={""}
+            checked={selectedCoinId.includes(coinData.id)}
+            onChange={() => {
               setSelectedCoinId((prev) => {
                 if (prev.includes(coinData.id)) {
                   return prev.filter((id) => id != coinData.id);
@@ -77,15 +107,9 @@ export const CreateForm = () => {
                 }
               });
             }}
-          >
-            <input
-              type="checkbox"
-              value=""
-              className="w-5 h-5 appearance-none border border-gray-300  rounded-md mr-2 hover:border-indigo-500 hover:bg-indigo-100 checked:bg-no-repeat checked:bg-center checked:border-indigo-500 checked:bg-indigo-100"
-            />
-          </div>
+          />
         ),
-        className: " flex justify-center py-5 px-5",
+        className: "p-5",
       },
       {
         field: TableHeaderField.CRYPTO_INFO,
@@ -94,28 +118,40 @@ export const CreateForm = () => {
             <Image
               src={coinListMetaData.data?.[coinData.id + ""]?.logo || ""}
               alt={coinData.name + "logo"}
-              className="w-10 h-10"
-              width={10}
-              height={10}
+              className="w-10 h-10 mt-1"
+              width={64}
+              height={64}
             />
             <div>
-              <p>{coinData.name}</p>
+              <p className="truncate w-48">{coinData.name}</p>
               <p>{coinData.symbol}</p>
+            </div>
+          </div>
+        ),
+        searchText: coinData.name.concat(",", coinData.symbol),
+      },
+      {
+        field: TableHeaderField.CRYPTO_PRICE,
+        component: (
+          <div className="flex justify-end text-end">
+            <div>
+              <p>{formatter.format(coinData.quote.USD.price)}</p>
+              <p>
+                <ProfitLoss
+                  percentage={+coinData.quote.USD.percent_change_24h || 0}
+                />
+              </p>
             </div>
           </div>
         ),
       },
       {
-        field: TableHeaderField.CRYPTO_PRICE,
-        component: "$" + coinData.quote.USD.price,
-      },
-      {
         field: TableHeaderField.MARKET_CAP,
-        component: "$" + coinData.quote.USD.market_cap,
-      },
-      {
-        field: TableHeaderField.CHANGE,
-        component: +coinData.quote.USD.percent_change_24h,
+        component: (
+          <p className="text-end">
+            {formatMarketCap(coinData.quote.USD.market_cap)}
+          </p>
+        ),
       },
     ];
   });
@@ -123,7 +159,6 @@ export const CreateForm = () => {
     <div className="h-[80%]">
       <div className="relative">
         <div className="flex justify-between flex-row items-center">
-          <SearchComponent input={input} setInput={setInput} />
           <div>
             <Modal
               openModal={openModal}
@@ -170,7 +205,7 @@ export const CreateForm = () => {
                       );
                     })}
                   </ul>
-                  <div className="w-2/4 relative w-full">
+                  <div className="relative w-full">
                     {selectedCoinId.map((coinId) => {
                       const coinData = coinListApiResponse.data.find(
                         (data) => data.id === coinId
@@ -208,7 +243,7 @@ export const CreateForm = () => {
                   <span className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"></span>
                 </span>
                 <span className="absolute bottom-0 left-0 w-full h-full transition-all duration-300 ease-in-out delay-200 -translate-x-full translate-y-full bg-indigo-600 rounded-2xl group-hover:mb-12 group-hover:translate-x-0"></span>
-                <span className="relative w-full text-base font-semibold text-left text-white transition-colors duration-200 ease-in-out group-hover:text-white">
+                <span className="relative w-auto text-base font-semibold text-left text-white transition-colors duration-200 ease-in-out group-hover:text-white">
                   Create Contract
                   <AnimatedNumber value={selectedCoinId.length} />
                 </span>
@@ -216,8 +251,7 @@ export const CreateForm = () => {
             </Modal>
           </div>
         </div>
-
-        <div style={{ width: "80vw" }}>
+        <div className="max-w[80vw] p-12 min-w[50vw]">
           <Datatable
             headers={tableHeaders}
             rows={dataRows}

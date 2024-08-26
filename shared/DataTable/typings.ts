@@ -9,16 +9,19 @@ export enum TableHeaderField {
   CHANGE_PERCENTAGE = "changePercentage",
 }
 export interface TableHeaders {
+  isSearch?: boolean;
   field: TableHeaderField;
   component: string | React.ReactNode;
   isSortable?: boolean;
   align?: string;
+  width?: string
 }
 
 export interface TableRows {
   field: TableHeaderField;
   component: string | number | React.ReactNode;
   className?: string;
+  searchText?: string;
 }
 
 export interface DataTableProps {
