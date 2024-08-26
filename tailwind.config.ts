@@ -19,7 +19,11 @@ const config: Config = {
       },
       height: {
         "70vh": "70vh",
+        "60vw": "60vw",
       },
+    },
+    colors: {
+      overlay: "rgba(0,0,0,0.25)",
     },
   },
   plugins: [],

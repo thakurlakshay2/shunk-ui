@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { PaginationProps } from "./typings";
-import { useENS } from "@thirdweb-dev/react";
 
 export const Pagination: React.FC<PaginationProps> = ({
   pageSize = 25,
