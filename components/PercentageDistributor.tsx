@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 
-interface Item {
+export interface Item {
   id: number;
-  name: string;
+  name: React.ReactNode | string;
   percentage: number;
 }
 
@@ -48,55 +48,45 @@ export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-white shadow-md rounded-lg">
-      <div className="space-y-4">
-        {data.map((item) => (
-          <div key={item.id} className="p-4 bg-gray-100 rounded-lg">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-700 font-medium">{item.name}</span>
-              <input
-                type="number"
-                min="0"
-                max="100"
-                value={item.percentage}
-                onChange={(e) =>
-                  handleChange(item.id, parseInt(e.target.value, 10) || 0)
-                }
-                onBlur={handleBlur}
-                className={clsx(
-                  "w-16 p-2 border rounded text-right",
-                  totalPercentage > 100
-                    ? "border-red-500"
-                    : "border-gray-300"
-                )}
-              />
-            </div>
+    <div className="flex flex-wrap justify-center gap-y-2.5 gap-x-2.5">
+      {data.map((item) => (
+        <div
+          key={item.id}
+          className="  w-2/5 min-w-80  p-4 bg-gray-100 rounded-lg"
+        >
+          <div className="flex justify-between items-center">
+            <span className="text-gray-700 font-medium">{item.name}</span>
             <input
-              type="range"
+              type="number"
               min="0"
               max="100"
               value={item.percentage}
-              onChange={(e) => handleChange(item.id, parseInt(e.target.value, 10))}
-              className="mt-2 w-full"
+              onChange={(e) =>
+                handleChange(item.id, parseInt(e.target.value, 10) || 0)
+              }
+              onBlur={handleBlur}
+              className={clsx(
+                "w-16 p-2 border rounded text-right block w-fit max-w-xs px-4 py-2 text-sm font-normal shadow-xs  rounded-full placeholder-red-400 focus:outline-none leading-relaxed",
+                totalPercentage > 100
+                  ? "text-red-600  border-red-500"
+                  : " text-emerald-600  border-emerald-300"
+              )}
             />
           </div>
-        ))}
-      </div>
-      <div className="flex justify-between items-center mt-6">
-        <div className={clsx("text-lg", isValid ? "text-green-500" : "text-red-500")}>
-          Total: {totalPercentage}%
+          {/* <input type="text" id="default-search"  placeholder="name@pagedone.com" required=""> */}
+
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={item.percentage}
+            onChange={(e) =>
+              handleChange(item.id, parseInt(e.target.value, 10))
+            }
+            className="mt-2 w-full"
+          />
         </div>
-        <button
-          className={clsx(
-            "py-2 px-4 rounded text-white",
-            isValid ? "bg-blue-500 hover:bg-blue-700" : "bg-gray-400 cursor-not-allowed"
-          )}
-          onClick={handleSubmit}
-          disabled={!isValid}
-        >
-          Submit
-        </button>
-      </div>
+      ))}
     </div>
   );
 };

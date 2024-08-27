@@ -1,4 +1,5 @@
 export interface BubbleDragProps {
-  size: number;
+  size?: number;
   data: React.ReactNode;
+  isLoading?: boolean;
 }

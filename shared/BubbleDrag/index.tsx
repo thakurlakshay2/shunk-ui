@@ -16,21 +16,29 @@ const generateDataset = () => {
     makeRgbColor(),
   ];
 };
-export const BubbleDrag: React.FC<BubbleDragProps> = ({ size, data }) => {
+export const BubbleDrag: React.FC<BubbleDragProps> = ({
+  size = 1,
+  data,
+  isLoading = false,
+}) => {
   const constraintsRef = useRef(null);
   const [dataset, setDataset] = useState(generateDataset());
   useEffect(() => {
-    const interva = setInterval(() => {
-      const newDataset = generateDataset();
-      setDataset(newDataset);
-    }, 2000);
+    const interva = setInterval(
+      () => {
+        const newDataset = generateDataset();
+        setDataset(newDataset);
+      },
+      isLoading ? 1000 : 2000
+    );
     return () => {
       clearTimeout(interva);
     };
-  }, [data]);
+  }, [data, isLoading]);
 
   return (
     <motion.div
+      style={{ zIndex: isLoading ? 1000 : "-10" }}
       className="absolute w-full h-full pointer-events-none opacity-70"
       ref={constraintsRef}
     >
@@ -52,7 +60,9 @@ export const BubbleDrag: React.FC<BubbleDragProps> = ({ size, data }) => {
           y: dataset[1],
           backgroundColor: dataset[2] + "",
         }}
-        className="w-16 h-16 text-white flex items-center justify-center rounded-full shadow-lg pointer-events-auto overflow-hidden"
+        transition={{ type: "spring", stiffness: isLoading ? 20 : 80 }}
+        style={{ width: size + "rem", height: size + "rem" }}
+        className={`text-white flex items-center justify-center rounded-full shadow-lg pointer-events-auto overflow-hidden`}
         drag
         dragConstraints={constraintsRef}
       >

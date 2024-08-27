@@ -16,7 +16,7 @@ import PercentageChange from "@/shared/PercentageChange";
 import Image from "next/image";
 import { useState } from "react";
 import { coinListApiResponse, CoinListData } from "../../constants/coinList";
-import { PercentageDistributor } from "../PercentageDistributor";
+import { Item, PercentageDistributor } from "../PercentageDistributor";
 import Checkbox from "../primitives/Checkbox";
 import ProfitLoss from "../shared/ProfitLoss";
 const formatter = new Intl.NumberFormat("en-US", {
@@ -60,15 +60,17 @@ export const CreateForm = () => {
     ["name", "symbol"],
     input
   );
+  const [isCreatingContract, setIsCreatingContract] = useState<boolean>(false);
 
   const tableHeaders: TableHeaders[] = [
     {
       field: TableHeaderField.CHECKBOX,
       component: (
         <input
+          disabled
           type="checkbox"
           value=""
-          className="w-5 h-5 appearance-none border border-gray-300  rounded-md mr-2 hover:border-indigo-500 hover:bg-indigo-100 checked:bg-no-repeat checked:bg-center checked:border-indigo-500 checked:bg-indigo-100"
+          className="w-5 h-5 appearance-none border   rounded-md mr-2 border-indigo-500 bg-indigo-100 "
         />
       ),
       align: "text-start",
@@ -158,43 +160,46 @@ export const CreateForm = () => {
   });
   return (
     <div>
-
       <div className="max-w[80vw] p-8 min-w[50vw] grid gap-4">
-      <div className="relative w-full h-full">
-                {selectedCoinId.map((coinId) => {
-                  const coinData = coinListApiResponse.data.find(
-                    (data) => data.id === coinId
-                  );
-                  return (
-                    <BubbleDrag
-                      key={coinId}
-                      data={
-                        <Image
-                          src={
-                            coinListMetaData.data?.[coinData?.id + ""]?.logo ||
-                            ""
-                          }
-                          alt={coinData?.name + "logo"}
-                          className="w-14 h-14 pointer-events-none"
-                          width={64}
-                          height={64}
-                        />
-                      }
-                      size={selectedCoinId.length / 100}
-                    />
-                  );
-                })}
-              </div>
+        <div className="relative w-full h-full">
+          {selectedCoinId.map((coinId) => {
+            const coinData = coinListApiResponse.data.find(
+              (data) => data.id === coinId
+            );
+            return (
+              <BubbleDrag
+                key={coinId}
+                isLoading={isCreatingContract}
+                data={
+                  <Image
+                    src={coinListMetaData.data?.[coinData?.id + ""]?.logo || ""}
+                    alt={coinData?.name + "logo"}
+                    className="w-14 h-14 pointer-events-none"
+                    width={64}
+                    height={64}
+                  />
+                }
+                size={
+                  ((10 * 5) / Math.min(selectedCoinId.length, 10)) *
+                  (isCreatingContract ? 2 : 1)
+                }
+              />
+            );
+          })}
+        </div>
         <Modal
           openModal={openModal}
           setOpenModal={setOpenModal}
-          onClickPrimaryButton={() => {}}
-          onClickSecondaryButton={() => {}}
+          onClickPrimaryButton={() => {
+            setIsCreatingContract(true);
+          }}
+          onClickSecondaryButton={() => {
+            setIsCreatingContract(false);
+            setOpenModal(false);
+          }}
           modalContent={
             <div className="relative flex gap-10">
-              <PercentageDistributor items={[{id: 1, name: "btc", percentage: 0}]} onValidSubmit={()=> {}}
-               ></PercentageDistributor>
-              <ul className="w-2/4 flex flex-col border-r-2	border-indigo-500/100 h-full">
+              {/* <ul className="w-2/4 flex flex-col border-r-2	border-indigo-500/100 h-full">
                 {selectedCoinId.map((coinId) => {
                   const coinData = coinListApiResponse.data.find(
                     (data) => data.id === coinId
@@ -222,22 +227,56 @@ export const CreateForm = () => {
                           </div>
                         </div>
                       </div>
-                      <PercentageChange
-                        initialPercentage={selectedCoinId.length / 100}
-                        onPercentageChange={function (
-                          newPercentage: number
-                        ): void {}}
-                      />
                     </li>
                   );
                 })}
-              </ul>
-             
+              </ul> */}
+              <PercentageDistributor
+                items={selectedCoinId.map((coinId) => {
+                  const coinData = coinListApiResponse.data.find(
+                    (data) => data.id === coinId
+                  );
+                  return {
+                    id: coinId,
+                    name: (
+                      <li
+                        key={coinId}
+                        className=" inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white border-b-2	 border-gray-300 text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
+                      >
+                        <div className="group flex justify-between w-full hover:text-indigo-600">
+                          <div className="flex gap-8">
+                            <Image
+                              src={
+                                coinListMetaData.data?.[coinData?.id + ""]
+                                  ?.logo || ""
+                              }
+                              alt={coinData?.name + "logo"}
+                              className="w-10 h-10"
+                              width={10}
+                              height={10}
+                            />
+                            <div>
+                              <p>{coinData?.name}</p>
+                              <p>{coinData?.symbol}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    ),
+                    percentage: 100 / selectedCoinId.length,
+                  } as Item;
+                })}
+                onValidSubmit={() => {}}
+              ></PercentageDistributor>
             </div>
           }
         >
           <div className=" flex justify-between">
-            <div className="content-center">      <p className=" text-center text-2xl -z-10 font-medium">BUIDL your own bag (BYOB)</p>
+            <div className="content-center">
+              {" "}
+              <p className=" text-center text-2xl -z-10 font-medium">
+                BUIDL your own bag (BYOB)
+              </p>
             </div>
             <div>
               <button
