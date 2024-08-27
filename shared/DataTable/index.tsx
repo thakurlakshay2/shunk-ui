@@ -15,6 +15,7 @@ export const Datatable: React.FC<DataTableProps> = ({
   rows,
   columnSizes,
 }) => {
+  const [modifiedRows, setModifiedRows] = useState<TableRows[][]>(rows);
   const [currentPage, setCurrentPage] = useState(0);
   const [displayedRows, setDisplayedRows] = useState<TableRows[][]>([]);
   const [searchQueries, setSearchQueries] = useState<string[]>(
@@ -25,18 +26,26 @@ export const Datatable: React.FC<DataTableProps> = ({
   );
 
   const pageSize = 25;
+  useEffect(() => {
+    setModifiedRows(rows);
+  }, [rows]);
+  useEffect(() => {
+    const filteredRows = rows.filter((row) =>
+      row.some((cell, idx) =>
+        cell.searchText
+          ?.toLowerCase()
+          .includes(searchQueries[idx].toLowerCase())
+      )
+    );
+    setCurrentPage(0);
+    setModifiedRows(filteredRows);
+  }, [rows, searchQueries]);
 
   useEffect(() => {
     const start = currentPage * pageSize;
     const end = start + pageSize;
-    const filteredRows = rows.filter((row) =>
-      row.some((cell, idx) => 
-        cell.searchText?.toLowerCase().includes(searchQueries[idx].toLowerCase())
-      )
-    );
-    setDisplayedRows(filteredRows.slice(start, end));
-  }, [rows, currentPage, searchQueries]);
-
+    setDisplayedRows(modifiedRows.slice(start, end));
+  }, [modifiedRows, currentPage]);
   const handleSearchChange = (idx: number, value: string) => {
     const newQueries = [...searchQueries];
     newQueries[idx] = value;
@@ -82,7 +91,11 @@ export const Datatable: React.FC<DataTableProps> = ({
                             <AiOutlineSearch
                               width={10}
                               height={10}
-                              className={`ml-2 w-5 h-5 ${searchQueries[idx] ?"text-blue-500" : "text-gray-500"} cursor-pointer`}
+                              className={`ml-2 w-5 h-5 ${
+                                searchQueries[idx]
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              } cursor-pointer`}
                               onClick={() => {
                                 const newVisibility = [...searchVisible];
                                 newVisibility[idx] = true;
@@ -104,7 +117,9 @@ export const Datatable: React.FC<DataTableProps> = ({
                                   type="text"
                                   placeholder="Search"
                                   value={searchQueries[idx]}
-                                  onChange={(e) => handleSearchChange(idx, e.target.value)}
+                                  onChange={(e) =>
+                                    handleSearchChange(idx, e.target.value)
+                                  }
                                   className="w-full border rounded px-2 py-1"
                                 />
                                 <AiOutlineClose
@@ -151,7 +166,7 @@ export const Datatable: React.FC<DataTableProps> = ({
             <Pagination
               pageSize={pageSize}
               defaultSelectedPage={currentPage}
-              total={rows.length}
+              total={modifiedRows.length}
               onClick={setCurrentPage}
             />
           </nav>
