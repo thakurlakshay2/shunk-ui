@@ -180,7 +180,7 @@ export const CreateForm = () => {
                   />
                 }
                 size={
-                  ((10 * 5) / Math.min(selectedCoinId.length, 10)) *
+                  ((5 * 5) / Math.min(selectedCoinId.length, 10)) *
                   (isCreatingContract ? 2 : 1)
                 }
               />
