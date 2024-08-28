@@ -3,7 +3,7 @@
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import "./globals.css";
 
-const activeChain = "ethereum"; // Set this to your desired blockchain
+const activeChain = "base"; // Set this to your desired blockchain
 
 export default function RootLayout({
   children,
