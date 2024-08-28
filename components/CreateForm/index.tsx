@@ -12,7 +12,6 @@ import {
   TableRows,
 } from "@/shared/DataTable/typings";
 import { Modal } from "@/shared/Modal";
-import PercentageChange from "@/shared/PercentageChange";
 import Image from "next/image";
 import { useState } from "react";
 import { coinListApiResponse, CoinListData } from "../../constants/coinList";
@@ -139,11 +138,11 @@ export const CreateForm = () => {
           <div className="flex justify-end text-end">
             <div>
               <p>{formatter.format(coinData.quote.USD.price)}</p>
-              <p>
+              <span>
                 <ProfitLoss
                   percentage={+coinData.quote.USD.percent_change_24h || 0}
                 />
-              </p>
+              </span>
             </div>
           </div>
         ),

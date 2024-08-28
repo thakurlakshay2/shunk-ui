@@ -1,4 +1,5 @@
-import axios, { isCancel, AxiosError } from "axios";
+"use server"
+import axios from "axios";
 
 export const oneInchList = async () => {
   const response = await axios.get("https://api.1inch.dev/token/v1.2/8453", {
@@ -9,5 +10,8 @@ export const oneInchList = async () => {
     },
     method: "get",
   });
-  console.log(response);
+  console.log(response.status, "1inch")
+  return response.data;
 };
+
+

@@ -1,17 +1,17 @@
 "use client";
 
-import { oneInchList } from "@/actions/createForm";
 import { CreateForm } from "@/components/CreateForm";
 import Header from "@/components/Header";
-import Watchlist from "@/components/Watchlist";
-import { useEffect } from "react";
 
 export default function Home() {
-  useEffect(() => {
-    oneInchList();
-  }, []);
+  const get1inchData = async () => {
+    const response = await fetch("/api/oneinch");
+    console.log(await response.json());
+  };
+  
   return (
     <main className="flex min-h-screen flex-col items-center px-24 py-8">
+      <button onClick={get1inchData}>get1inch</button>
       <Header />
       {/* <Watchlist /> */}
       <CreateForm />
