@@ -104,7 +104,6 @@ export default function AnimatedTokenPlane() {
 
 
     const newLocal = useMemo(() => {
-        console.log(sst, "123")
         return watchlist.map((token) => (
         <motion.div
             initial={{ x: "50%", y: "50%" }}
