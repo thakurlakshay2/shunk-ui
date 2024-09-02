@@ -10,6 +10,6 @@ export const oneInchList = async () => {
     },
     method: "get",
   });
-  console.log(response, "1inch");
+  // console.log(response, "1inch");
   return response.data;
 };

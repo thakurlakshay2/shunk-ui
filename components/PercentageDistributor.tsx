@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 
 export interface Item {
-  id: number;
+  id: number | string;
   name: React.ReactNode | string;
   percentage: number;
 }
@@ -26,7 +26,7 @@ export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
     setIsValid(total === 100);
   }, [data]);
 
-  const handleChange = (id: number, value: number) => {
+  const handleChange = (id: number | string, value: number) => {
     const updatedData = data.map((item) =>
       item.id === id ? { ...item, percentage: value } : item
     );

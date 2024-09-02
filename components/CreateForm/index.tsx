@@ -18,6 +18,7 @@ import { coinListApiResponse, CoinListData } from "../../constants/coinList";
 import { Item, PercentageDistributor } from "../PercentageDistributor";
 import Checkbox from "../primitives/Checkbox";
 import ProfitLoss from "../shared/ProfitLoss";
+import { OneInchInterface } from "@/app/api/oneinch/route";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -53,8 +54,9 @@ const formatMarketCap = (marketCap: number) => {
 
 export const CreateForm = () => {
   const [input, setInput] = useState<string>("");
-  const [selectedCoinId, setSelectedCoinId] = useState<number[]>([]);
+  const [selectedCoinId, setSelectedCoinId] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [oneInchData, setOneInchData] = useState<OneInchInterface[]>([]);
   const { filteredData } = useHandleSearch<CoinListData>(
     coinListApiResponse.data,
     ["name", "symbol"],
@@ -65,7 +67,19 @@ export const CreateForm = () => {
   useEffect(() => {
     const get1inchData = async () => {
       const response = await fetch("/api/oneinch");
-      console.log(await response.json());
+      const responseData = await response.json();
+      const data: OneInchInterface[] = [];
+
+      for (const prop in responseData) {
+        data.push(responseData[prop]);
+      }
+
+      // const response = await fetch("https://api.coingecko.com/api/v3/simple/token_price/id");
+      // const responseData = await response.json();
+      //   curl --request GET \
+      //  --url https://api.coingecko.com/api/v3/simple/token_price/id \
+      //  --header 'accept: application/json'
+      setOneInchData(data);
     };
 
     get1inchData();
@@ -100,20 +114,20 @@ export const CreateForm = () => {
       align: "text-end",
     },
   ];
-  const dataRows: TableRows[][] = filteredData.map((coinData) => {
+  const dataRows: TableRows[][] = oneInchData?.map((coinData, id) => {
     return [
       {
         field: TableHeaderField.CHECKBOX,
         component: (
           <Checkbox
             label={""}
-            checked={selectedCoinId.includes(coinData.id)}
+            checked={selectedCoinId.includes(coinData.symbol)}
             onChange={() => {
               setSelectedCoinId((prev) => {
-                if (prev.includes(coinData.id)) {
-                  return prev.filter((id) => id != coinData.id);
+                if (prev.includes(coinData.symbol)) {
+                  return prev.filter((id) => id != coinData.symbol);
                 } else {
-                  const newSelection = [...prev, coinData.id];
+                  const newSelection = [...prev, coinData.symbol];
                   return newSelection;
                 }
               });
@@ -127,7 +141,7 @@ export const CreateForm = () => {
         component: (
           <div className="flex gap-8">
             <Image
-              src={coinListMetaData.data?.[coinData.id + ""]?.logo || ""}
+              src={coinData.logoURI}
               alt={coinData.name + "logo"}
               className="w-10 h-10 mt-1"
               width={64}
@@ -146,11 +160,11 @@ export const CreateForm = () => {
         component: (
           <div className="flex justify-end text-end">
             <div>
-              <p>{formatter.format(coinData.quote.USD.price)}</p>
+              {/* <p>{formatter.format(coinData.quote.USD.price)}</p> */}
+              <p>{0}</p>
+
               <span>
-                <ProfitLoss
-                  percentage={+coinData.quote.USD.percent_change_24h || 0}
-                />
+                <ProfitLoss percentage={0} />
               </span>
             </div>
           </div>
@@ -160,7 +174,7 @@ export const CreateForm = () => {
         field: TableHeaderField.MARKET_CAP,
         component: (
           <p className="text-end">
-            {formatMarketCap(coinData.quote.USD.market_cap)}
+            {/* {formatMarketCap(coinData.quote.USD.market_cap)} */}
           </p>
         ),
       },
@@ -171,16 +185,14 @@ export const CreateForm = () => {
       <div className="max-w[80vw] p-8 min-w[50vw] grid gap-4">
         <div className="relative w-full h-full">
           {selectedCoinId.map((coinId) => {
-            const coinData = coinListApiResponse.data.find(
-              (data) => data.id === coinId
-            );
+            const coinData = oneInchData.find((data) => data.symbol === coinId);
             return (
               <BubbleDrag
                 key={coinId}
                 isLoading={isCreatingContract}
                 data={
                   <Image
-                    src={coinListMetaData.data?.[coinData?.id + ""]?.logo || ""}
+                    src={coinData?.logoURI || ""}
                     alt={coinData?.name + "logo"}
                     className="w-14 h-14 pointer-events-none"
                     width={64}
@@ -188,7 +200,7 @@ export const CreateForm = () => {
                   />
                 }
                 size={
-                  ((5 * 5) / Math.min(selectedCoinId.length, 10)) *
+                  Math.max((5 * 5) / Math.min(selectedCoinId.length, 10), 5) *
                   (isCreatingContract ? 2 : 1)
                 }
               />
@@ -241,11 +253,11 @@ export const CreateForm = () => {
               </ul> */}
               <PercentageDistributor
                 items={selectedCoinId.map((coinId) => {
-                  const coinData = coinListApiResponse.data.find(
-                    (data) => data.id === coinId
+                  const coinData = oneInchData.find(
+                    (data) => data.symbol === coinId
                   );
                   return {
-                    id: coinId,
+                    id: coinData?.symbol || coinId,
                     name: (
                       <li
                         key={coinId}
@@ -254,10 +266,7 @@ export const CreateForm = () => {
                         <div className="group flex justify-between w-full hover:text-indigo-600">
                           <div className="flex gap-8">
                             <Image
-                              src={
-                                coinListMetaData.data?.[coinData?.id + ""]
-                                  ?.logo || ""
-                              }
+                              src={coinData?.logoURI || ""}
                               alt={coinData?.name + "logo"}
                               className="w-10 h-10"
                               width={10}
