@@ -1,0 +1,1 @@
+export const CREATE_FORM_TABLE_COLUMN_SIZE = [10, 50, 25, 25];

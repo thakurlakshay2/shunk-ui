@@ -89,44 +89,42 @@ export default function AnimatedTokenPlane() {
     config: { mass: 1, tension: 200, friction: 20 },
   }));
 
-  const [sst, setsst] = useState(0)
-  
-  useEffect(() => {
-     
-  const x = setInterval(() => {
-    return setsst(x => x+1)},2000);
+  const [sst, setsst] = useState(0);
 
+  useEffect(() => {
+    const x = setInterval(() => {
+      return setsst((x) => x + 1);
+    }, 2000);
 
     return () => {
       clearInterval(x);
-    }
-  }, [])
+    };
+  }, []);
 
-
-    const newLocal = useMemo(() => {
-        return watchlist.map((token) => (
-        <motion.div
-            initial={{ x: "50%", y: "50%" }}
-            animate={{ x: `${(Math.random()+Math.random()) * 150}%`, y: `${(Math.random()+Math.random()) * 350}%` }}
-            key={token.id}
-            className="absolute"
-            style={{
-                width: "50px",
-                height: "50px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            {token.image && (
-                <Image
-                    src={token.image}
-                    alt={token.name}
-                    width={50}
-                    height={50} />
-            )}
-        </motion.div>
-    ))},[watchlist, sst]);
+  const newLocal = useMemo(() => {
+    return watchlist.map((token) => (
+      <motion.div
+        initial={{ x: "50%", y: "50%" }}
+        animate={{
+          x: `${(Math.random() + Math.random()) * 150}%`,
+          y: `${(Math.random() + Math.random()) * 350}%`,
+        }}
+        key={token.id}
+        className="absolute"
+        style={{
+          width: "50px",
+          height: "50px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {token.image && (
+          <Image src={token.image} alt={token.name} width={50} height={50} />
+        )}
+      </motion.div>
+    ));
+  }, [watchlist, sst]);
   return (
     <div className="relative p-4 bg-white shadow-md rounded-lg">
       <div className="flex flex-col mb-6">
@@ -145,9 +143,7 @@ export default function AnimatedTokenPlane() {
         </button>
       </div>
 
-      <div className=" w-full h-96 overflow-hidden">
-        {newLocal}
-      </div>
+      <div className=" w-full h-96 overflow-hidden">{newLocal}</div>
 
       {/* Dropdown for search results */}
       <AnimatePresence>
