@@ -13,11 +13,12 @@ import {
 } from "@/shared/DataTable/typings";
 import { Modal } from "@/shared/Modal";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { coinListApiResponse, CoinListData } from "../../constants/coinList";
 import { Item, PercentageDistributor } from "../PercentageDistributor";
 import Checkbox from "../primitives/Checkbox";
 import ProfitLoss from "../shared/ProfitLoss";
+
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -61,6 +62,14 @@ export const CreateForm = () => {
   );
   const [isCreatingContract, setIsCreatingContract] = useState<boolean>(false);
 
+  useEffect(() => {
+    const get1inchData = async () => {
+      const response = await fetch("/api/oneinch");
+      console.log(await response.json());
+    };
+
+    get1inchData();
+  }, []);
   const tableHeaders: TableHeaders[] = [
     {
       field: TableHeaderField.CHECKBOX,

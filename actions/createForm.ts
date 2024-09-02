@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import axios from "axios";
 
 export const oneInchList = async () => {
@@ -10,8 +10,6 @@ export const oneInchList = async () => {
     },
     method: "get",
   });
-  console.log(response.status, "1inch")
+  console.log(response, "1inch");
   return response.data;
 };
-
-
