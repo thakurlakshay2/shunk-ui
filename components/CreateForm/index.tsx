@@ -74,16 +74,12 @@ export const CreateForm = () => {
         data.push(responseData[prop]);
       }
 
-      // const response = await fetch("https://api.coingecko.com/api/v3/simple/token_price/id");
-      // const responseData = await response.json();
-      //   curl --request GET \
-      //  --url https://api.coingecko.com/api/v3/simple/token_price/id \
-      //  --header 'accept: application/json'
       setOneInchData(data);
     };
 
     get1inchData();
   }, []);
+
   const tableHeaders: TableHeaders[] = [
     {
       field: TableHeaderField.CHECKBOX,
@@ -161,10 +157,10 @@ export const CreateForm = () => {
           <div className="flex justify-end text-end">
             <div>
               {/* <p>{formatter.format(coinData.quote.USD.price)}</p> */}
-              <p>{0}</p>
+              <p>{coinData?.usd || 0}</p>
 
               <span>
-                <ProfitLoss percentage={0} />
+                <ProfitLoss percentage={coinData?.usd_24h_change || 0} />
               </span>
             </div>
           </div>
@@ -174,7 +170,7 @@ export const CreateForm = () => {
         field: TableHeaderField.MARKET_CAP,
         component: (
           <p className="text-end">
-            {/* {formatMarketCap(coinData.quote.USD.market_cap)} */}
+            {formatMarketCap(coinData?.usd_market_cap || 0)}
           </p>
         ),
       },
