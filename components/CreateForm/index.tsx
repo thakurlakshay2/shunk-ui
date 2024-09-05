@@ -279,7 +279,7 @@ export const CreateForm = () => {
                     percentage: 100 / selectedCoinId.length,
                   } as Item;
                 })}
-                onValidSubmit={() => {}}
+                onValidSubmit={() => { }}
               ></PercentageDistributor>
             </div>
           }
@@ -310,6 +310,7 @@ export const CreateForm = () => {
           headers={tableHeaders}
           rows={dataRows}
           columnSizes={CREATE_FORM_TABLE_COLUMN_SIZE}
+          customStyles={{ width: "600px" }}
         />
       </div>
     </div>
