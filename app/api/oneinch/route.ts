@@ -41,7 +41,7 @@ export async function GET() {
   const stringParam = await data
     .map((addressData) => addressData.address)
     .join(",");
-  console.log(stringParam);
+
   const coinResponse = await axios.get<Record<string, CoinGeckoAPI>>(
     `https://api.coingecko.com/api/v3/simple/token_price/base?contract_addresses=${stringParam}&vs_currencies=${CURRENCY}&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&precision=full`,
     {

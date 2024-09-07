@@ -19,6 +19,9 @@ import { Item, PercentageDistributor } from "../PercentageDistributor";
 import Checkbox from "../primitives/Checkbox";
 import ProfitLoss from "../shared/ProfitLoss";
 import { OneInchInterface } from "@/app/api/oneinch/route";
+import Skeleton from "@/shared/Skeleton";
+import { useContract } from "@thirdweb-dev/react";
+import { ShunkFactoryABI } from "./CONTRACT_ABI";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -52,6 +55,54 @@ const formatMarketCap = (marketCap: number) => {
   }
 };
 
+const shimmerArrayLoop = new Array(8).fill(1);
+const dataRowsShimmer: TableRows[][] = shimmerArrayLoop.map(() => {
+  return [
+    {
+      field: TableHeaderField.CHECKBOX,
+      component: (
+        <Skeleton isLoading={true} width="w-5 rounded-md	" height="h-5" />
+      ),
+      className: "p-5",
+    },
+    {
+      field: TableHeaderField.CRYPTO_INFO,
+      component: (
+        <div className=" w-full flex gap-4">
+          <Skeleton
+            isLoading={true}
+            height="h-10"
+            width={"w-10"}
+            type="circle"
+          />
+          <div className="w-3/5 flex flex-col gap-4">
+            <Skeleton isLoading={true} height="h-4" width={"w-full"} />
+            <Skeleton isLoading={true} height="h-4" width={"w-1/2"} />
+          </div>
+        </div>
+      ),
+    },
+    {
+      field: TableHeaderField.CRYPTO_PRICE,
+      component: (
+        <div className="w-full flex flex-col gap-4 place-items-end		">
+          <Skeleton isLoading={true} height="h-4" width={"w-full"} />
+          <Skeleton isLoading={true} height="h-4" width={"w-1/3"} />
+        </div>
+      ),
+    },
+    {
+      field: TableHeaderField.MARKET_CAP,
+      component: (
+        <div className="w-full  place-items-end	">
+          <Skeleton isLoading={true} width={"w-full"} />
+        </div>
+      ),
+    },
+  ];
+});
+
+const CONTRACT_ADDRESS = process.env.BASE_CONTRACT_ADDRESS;
 export const CreateForm = () => {
   const [input, setInput] = useState<string>("");
   const [selectedCoinId, setSelectedCoinId] = useState<string[]>([]);
@@ -64,10 +115,15 @@ export const CreateForm = () => {
   );
   const [isCreatingContract, setIsCreatingContract] = useState<boolean>(false);
 
+  const { contract, isLoading, error } = useContract(
+    CONTRACT_ADDRESS,
+    ShunkFactoryABI
+  );
+
   useEffect(() => {
     const get1inchData = async () => {
       const response = await fetch("/api/oneinch");
-      const responseData = await response.json();
+      const responseData = await response?.json();
       const data: OneInchInterface[] = [];
 
       for (const prop in responseData) {
@@ -110,6 +166,7 @@ export const CreateForm = () => {
       align: "text-end",
     },
   ];
+
   const dataRows: TableRows[][] = oneInchData?.map((coinData, id) => {
     return [
       {
@@ -157,7 +214,7 @@ export const CreateForm = () => {
           <div className="flex justify-end text-end">
             <div>
               {/* <p>{formatter.format(coinData.quote.USD.price)}</p> */}
-              <p>{coinData?.usd || 0}</p>
+              <p>{(coinData?.usd || 0).toFixed(4)}</p>
 
               <span>
                 <ProfitLoss percentage={coinData?.usd_24h_change || 0} />
@@ -176,6 +233,51 @@ export const CreateForm = () => {
       },
     ];
   });
+
+  const [itemsContent, setItemContent] = useState<Item[]>([]);
+  useEffect(() => {
+    setItemContent(
+      selectedCoinId.map((coinId) => {
+        const coinData = oneInchData.find((data) => data.symbol === coinId);
+        return {
+          id: coinData?.address || coinId,
+          name: (
+            <li
+              key={coinId}
+              className=" inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white border-b-2	 border-gray-300 text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
+            >
+              <div className="group flex justify-between w-full hover:text-indigo-600">
+                <div className="flex gap-8">
+                  <Image
+                    src={coinData?.logoURI || ""}
+                    alt={coinData?.name + "logo"}
+                    className="w-10 h-10"
+                    width={10}
+                    height={10}
+                  />
+                  <div>
+                    <p>{coinData?.name}</p>
+                    <p>{coinData?.symbol}</p>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ),
+          percentage: 100 / selectedCoinId.length,
+        } as Item;
+      })
+    );
+  }, [oneInchData, selectedCoinId]);
+
+  const handleChange = (id: number | string, value: number) => {
+    setItemContent((data) => {
+      const updatedData = data.map((item) =>
+        item.id === id ? { ...item, percentage: value } : item
+      );
+      return updatedData;
+    });
+  };
+
   return (
     <div>
       <div className="max-w[80vw] p-8 min-w[50vw] grid gap-4">
@@ -214,72 +316,10 @@ export const CreateForm = () => {
             setOpenModal(false);
           }}
           modalContent={
-            <div className="relative flex gap-10">
-              {/* <ul className="w-2/4 flex flex-col border-r-2	border-indigo-500/100 h-full">
-                {selectedCoinId.map((coinId) => {
-                  const coinData = coinListApiResponse.data.find(
-                    (data) => data.id === coinId
-                  );
-                  return (
-                    <li
-                      key={coinId}
-                      className=" inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white border-b-2	 border-gray-300 text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
-                    >
-                      <div className="group flex justify-between w-full hover:text-indigo-600">
-                        <div className="flex gap-8">
-                          <Image
-                            src={
-                              coinListMetaData.data?.[coinData?.id + ""]
-                                ?.logo || ""
-                            }
-                            alt={coinData?.name + "logo"}
-                            className="w-10 h-10"
-                            width={10}
-                            height={10}
-                          />
-                          <div>
-                            <p>{coinData?.name}</p>
-                            <p>{coinData?.symbol}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul> */}
+            <div className=" justify-center relative flex gap-10">
               <PercentageDistributor
-                items={selectedCoinId.map((coinId) => {
-                  const coinData = oneInchData.find(
-                    (data) => data.symbol === coinId
-                  );
-                  return {
-                    id: coinData?.symbol || coinId,
-                    name: (
-                      <li
-                        key={coinId}
-                        className=" inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white border-b-2	 border-gray-300 text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
-                      >
-                        <div className="group flex justify-between w-full hover:text-indigo-600">
-                          <div className="flex gap-8">
-                            <Image
-                              src={coinData?.logoURI || ""}
-                              alt={coinData?.name + "logo"}
-                              className="w-10 h-10"
-                              width={10}
-                              height={10}
-                            />
-                            <div>
-                              <p>{coinData?.name}</p>
-                              <p>{coinData?.symbol}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    ),
-                    percentage: 100 / selectedCoinId.length,
-                  } as Item;
-                })}
-                onValidSubmit={() => { }}
+                items={itemsContent}
+                handleChange={handleChange}
               ></PercentageDistributor>
             </div>
           }
@@ -294,9 +334,19 @@ export const CreateForm = () => {
             <div>
               <button
                 onClick={(e) => {
+                  if (selectedCoinId.length === 0) {
+                    return;
+                  }
                   setOpenModal(true);
                 }}
-                className="modal-button relative items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-indigo-500 rounded-xl group"
+                disabled={selectedCoinId.length === 0}
+                className={`modal-button relative items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all duration-500 rounded-xl group
+    ${
+      selectedCoinId.length === 0
+        ? "text-sm bg-indigo-300 text-white font-semibold text-center shadow-xs cursor-not-allowed"
+        : "bg-indigo-500 text-base font-semibold group-hover:text-white"
+    }
+  `}
               >
                 <span className="relative w-auto text-base font-semibold text-left text-white transition-colors duration-200 ease-in-out group-hover:text-white">
                   Confirm
@@ -308,9 +358,10 @@ export const CreateForm = () => {
         </Modal>
         <Datatable
           headers={tableHeaders}
-          rows={dataRows}
+          rows={oneInchData.length === 0 ? dataRowsShimmer : dataRows}
           columnSizes={CREATE_FORM_TABLE_COLUMN_SIZE}
-          customStyles={{ width: "600px" }}
+          customStyles={{ width: "800px" }}
+          isLoading={oneInchData.length === 0}
         />
       </div>
     </div>

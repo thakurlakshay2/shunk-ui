@@ -11,8 +11,8 @@ const colors = ["#dddfd4", "#fae596", "#3fb0ac", "#173e43"];
 const makeRgbColor = () => colors[_random(0, 6)];
 const generateDataset = () => {
   return [
-    _random(-(window.innerWidth * 0.4), window.innerWidth * 0.6),
-    _random(1, window.innerHeight * 0.5),
+    _random(-(window.innerWidth * 0.3), window.innerWidth * 0.65),
+    _random(1, window.innerHeight * 0.8),
     makeRgbColor(),
   ];
 };

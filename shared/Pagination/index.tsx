@@ -36,8 +36,11 @@ export const Pagination: React.FC<PaginationProps> = ({
       </div>
       <div
         onClick={(e) => {
-          console.dir(e.target);
-          setSelectedPageNumber(Number((e as unknown as {target: {id: string}}).target?.id || "1"));
+          setSelectedPageNumber(
+            Number(
+              (e as unknown as { target: { id: string } }).target?.id || "1"
+            )
+          );
         }}
       >
         {arr.map((pageNumber, idx) => {

@@ -51,7 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
                 BUIDL YOUR OWN BAG - ALLOCATION
               </h4>
               <button
-                onClick={() => setOpenModal(false)}
+                onClick={onClickSecondaryButton}
                 aria-label="Close Modal"
                 className="text-gray-500 hover:text-gray-700"
               >

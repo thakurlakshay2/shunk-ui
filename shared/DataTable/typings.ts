@@ -12,7 +12,7 @@ export enum TableHeaderField {
   CREATOR = "creator",
   COMPOSITION = "composition",
   AUM = "aum",
-  CARET = "caret"
+  CARET = "caret",
 }
 export interface TableHeaders {
   isSearch?: boolean;
@@ -20,7 +20,7 @@ export interface TableHeaders {
   component: string | React.ReactNode;
   isSortable?: boolean;
   align?: string;
-  width?: string
+  width?: string;
 }
 
 export interface TableRows {
@@ -36,4 +36,5 @@ export interface DataTableProps {
   columnSizes?: number[];
   customStyles?: CSSProperties;
   hidePagination?: boolean;
+  isLoading?: boolean;
 }

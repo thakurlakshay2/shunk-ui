@@ -15,7 +15,8 @@ export const Datatable: React.FC<DataTableProps> = ({
   rows,
   columnSizes,
   customStyles,
-  hidePagination = false
+  hidePagination = false,
+  isLoading = false,
 }) => {
   const [modifiedRows, setModifiedRows] = useState<TableRows[][]>(rows);
   const [currentPage, setCurrentPage] = useState(0);
@@ -32,6 +33,9 @@ export const Datatable: React.FC<DataTableProps> = ({
     setModifiedRows(rows);
   }, [rows]);
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
     const filteredRows = rows.filter((row) =>
       row.some((cell, idx) =>
         cell.searchText
@@ -40,8 +44,9 @@ export const Datatable: React.FC<DataTableProps> = ({
       )
     );
     setCurrentPage(0);
+
     setModifiedRows(filteredRows);
-  }, [rows, searchQueries]);
+  }, [isLoading, rows, searchQueries]);
 
   useEffect(() => {
     const start = currentPage * pageSize;
@@ -68,12 +73,12 @@ export const Datatable: React.FC<DataTableProps> = ({
     newVisibility[idx] = false;
     setSearchVisible(newVisibility);
   };
-  console.log(searchVisible);
+
   return (
-    <div className="flex flex-col" style={customStyles}>
+    <div className="flex flex-col 	" style={customStyles}>
       <div className="overflow-x-auto pb-4 min-w-full">
         <div className="block">
-          <div className="overflow-x-auto w-full border rounded-lg border-gray-300 h-[60vh] thin-scrollbar">
+          <div className="overflow-x-auto w-full border rounded-lg border-gray-300 h-[60vh] thin-scrollbar bg-white">
             <table className="relative w-full rounded-xl">
               <thead className="sticky top-0 bg-gray-50 z-10">
                 <tr className="bg-gray-50">
@@ -93,10 +98,11 @@ export const Datatable: React.FC<DataTableProps> = ({
                             <AiOutlineSearch
                               width={10}
                               height={10}
-                              className={`ml-2 w-5 h-5 ${searchQueries[idx]
+                              className={`ml-2 w-5 h-5 ${
+                                searchQueries[idx]
                                   ? "text-blue-500"
                                   : "text-gray-500"
-                                } cursor-pointer`}
+                              } cursor-pointer`}
                               onClick={() => {
                                 const newVisibility = [...searchVisible];
                                 newVisibility[idx] = true;
@@ -160,7 +166,7 @@ export const Datatable: React.FC<DataTableProps> = ({
               </tbody>
             </table>
           </div>
-          {!hidePagination &&
+          {!hidePagination && (
             <nav
               className="flex items-center justify-center py-4"
               aria-label="Table navigation"
@@ -171,7 +177,8 @@ export const Datatable: React.FC<DataTableProps> = ({
                 total={modifiedRows.length}
                 onClick={setCurrentPage}
               />
-            </nav>}
+            </nav>
+          )}
         </div>
       </div>
     </div>
