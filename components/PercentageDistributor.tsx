@@ -56,7 +56,7 @@ export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
           className={clsx(
             "w-full min-w-80 p-4 bg-white border border-indigo-200 rounded-lg shadow transform transition-all duration-300 hover:scale-105",
             totalPercentage > 100
-              ? "hover:shadow-lg shadow-red-800 border-red-800  hover:shadow-lg 	"
+              ? "hover:shadow-lg shadow-red-800 border-red-800 "
               : "hover:shadow-md  "
           )}
         >

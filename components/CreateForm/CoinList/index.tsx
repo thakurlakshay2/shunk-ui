@@ -1,6 +1,6 @@
 "use client"; // Ensure this is a Client Component
 
-import { coinListMetaData } from "@/constants/coinListMetadata";
+import { CoinData } from "@/app/api/coinData/route";
 import { CREATE_FORM_TABLE_COLUMN_SIZE } from "@/constants/tableSizes";
 import { useHandleSearch } from "@/hooks/useHandleSearch";
 import AnimatedNumber from "@/shared/AnimatedNumber";
@@ -12,18 +12,15 @@ import {
   TableRows,
 } from "@/shared/DataTable/typings";
 import { Modal } from "@/shared/Modal";
+import Skeleton from "@/shared/Skeleton";
+import { useContract } from "@thirdweb-dev/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { coinListApiResponse, CoinListData } from "../../../constants/coinList";
 import { Item, PercentageDistributor } from "../../PercentageDistributor";
 import Checkbox from "../../primitives/Checkbox";
 import ProfitLoss from "../../shared/ProfitLoss";
-import { OneInchInterface } from "@/app/api/oneinch/route";
-import Skeleton from "@/shared/Skeleton";
-import { useContract } from "@thirdweb-dev/react";
 import { ShunkFactoryABI } from "../CONTRACT_ABI";
-import { coinDataList } from "@/actions/createForm";
-import { CoinData } from "@/app/api/coinData/route";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -195,8 +192,8 @@ export const CoinList = () => {
               src={coinData.icon}
               alt={coinData.name + "logo"}
               className="w-10 h-10 mt-1 rounded-full"
-              width={64}
-              height={64}
+              width={32}
+              height={32}
             />
             <div>
               <p className="truncate w-48">{coinData.name}</p>
@@ -242,7 +239,7 @@ export const CoinList = () => {
           name: (
             <li
               key={coinId}
-              className=" inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white border-b-2	 border-gray-300 text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
+              className=" inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white  text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
             >
               <div className="group flex justify-between w-full hover:text-indigo-600">
                 <div className="flex gap-8">
@@ -250,8 +247,8 @@ export const CoinList = () => {
                     src={data.icon}
                     alt={data?.name + "logo"}
                     className="w-10 h-10 rounded-full	"
-                    width={10}
-                    height={10}
+                    width={32}
+                    height={32}
                   />
                   <div>
                     <p>{data?.name}</p>
@@ -278,8 +275,12 @@ export const CoinList = () => {
 
   return (
     <div>
-      <div className="max-w[80vw] p-8 min-w[50vw] grid gap-4">
-        <div className="relative w-full h-full">
+      <div className="max-w[80vw] p-8 min-w[50vw] h-full grid gap-4">
+        <div
+          className={`fixed w-full h-full ${
+            isCreatingContract ? "z-1000" : ""
+          }`}
+        >
           {selectedCoinId.map((coinId) => {
             const data = coinData.find((data) => data.symbol === coinId);
             return (
@@ -308,6 +309,10 @@ export const CoinList = () => {
           setOpenModal={setOpenModal}
           onClickPrimaryButton={() => {
             setIsCreatingContract(true);
+            // TODO: Remove when integrating contract
+            setTimeout(() => {
+              setIsCreatingContract(false);
+            },2000)
           }}
           onClickSecondaryButton={() => {
             setIsCreatingContract(false);
