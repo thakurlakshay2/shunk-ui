@@ -12,11 +12,13 @@ export interface Item {
 interface PercentageDistributorProps {
   items: Item[];
   handleChange: (id: number | string, value: number) => void;
+  width?: number;
 }
 
 export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
   items,
   handleChange,
+  width,
 }) => {
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -68,30 +70,44 @@ export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
         >
           <div className="flex justify-between items-center">
             <span className="text-indigo-800 font-semibold">{item.name}</span>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              value={item.percentage}
-              onChange={(e) =>
-                handleChange(item.id, parseInt(e.target.value, 10) || 0)
-              }
-              onBlur={handleBlur}
-              className={clsx(
-                "w-fit  p-2 border rounded-full text-right block px-4 py-2 text-sm font-normal shadow-sm transition-all duration-300 focus:outline-none focus:ring-2",
-                totalPercentage > 100
-                  ? "text-red-600 border-red-500 focus:ring-red-200"
-                  : "text-emerald-600 focus:ring-emerald-200"
-              )}
-              style={{ borderColor: item.color, borderWidth: "1px" }}
-            />
-          </div>
-          <div className="relative mt-2">
-            <RangeInput
-              value={item.percentage}
-              onChange={(e) => handleChange(item.id, e)}
-              color={item.color}
-            />
+            <div>
+              <div className="w-full self-end content-end flex justify-end pb-2">
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={item.percentage}
+                  onChange={(e) =>
+                    handleChange(item.id, parseInt(e.target.value, 10) || 0)
+                  }
+                  onBlur={handleBlur}
+                  className={clsx(
+                    "w-fit p-2 py-1 border rounded-md text-right block text-sm font-normal shadow-sm transition-all duration-300 focus:outline-none focus:ring-2 pr-5",
+                    totalPercentage > 100
+                      ? "text-red-600 border-red-500 focus:ring-red-200"
+                      : "text-emerald-600 focus:ring-emerald-200"
+                  )}
+                  style={{
+                    borderColor:
+                      totalPercentage > 100 ? "rgb(239 68 68)" : item.color,
+                    borderWidth: "1px",
+                  }}
+                />
+                <span
+                  className={`absolute py-[0.125rem] mx-1 ${
+                    totalPercentage > 100 ? "text-red-500" : "text-emerald-600"
+                  }`}
+                >
+                  %
+                </span>
+              </div>
+
+              <RangeInput
+                value={item.percentage}
+                onChange={(e) => handleChange(item.id, e)}
+                color={item.color}
+              />
+            </div>
           </div>
         </div>
       ))}

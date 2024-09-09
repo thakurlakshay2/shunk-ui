@@ -251,13 +251,14 @@ export const CoinList = () => {
                     <Image
                       src={data.icon}
                       alt={data?.name + " logo"}
-                      className="w-10 h-10 rounded-full"
+                      className="w-10 h-10 rounded-full self-center mt-1"
                       width={32}
                       height={32}
                     />
                     <div>
-                      <p>{data?.name}</p>
-                      <p>{data?.symbol}</p>
+                    <p className="text-xl pt-1">{data?.symbol}</p>
+                      <p className="text-md pt-1">{data?.name}</p>
+                    
                     </div>
                   </div>
                 </div>

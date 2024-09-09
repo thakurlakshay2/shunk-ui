@@ -11,14 +11,14 @@ const RangeInput: React.FC<RangeInputProps> = ({ value, onChange, color }) => {
   };
 
   return (
-    <div className="relative w-full p-4">
+    <div className="relative ">
       <input
         type="range"
         min="0"
         max="100"
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
-        className="w-full h-2 rounded-lg bg-transparent	cursor-pointer"
+        className="w-full h-2 rounded-lg bg-transparent	cursor-pointer flex justify-end "
         style={
           color
             ? { accentColor: color }
@@ -28,7 +28,7 @@ const RangeInput: React.FC<RangeInputProps> = ({ value, onChange, color }) => {
               }
         }
       />
-      <div
+      {/* <div
         className="w-fit bg-transparent	 absolute top-1/2 transform -translate-y-full right-0 mr-4 font-medium px-2 py-1 rounded"
         style={{
           left: `${Math.min(95, Math.max(5, value))}%`,
@@ -37,7 +37,7 @@ const RangeInput: React.FC<RangeInputProps> = ({ value, onChange, color }) => {
         }}
       >
         {value.toFixed(2)}%
-      </div>
+      </div> */}
     </div>
   );
 };

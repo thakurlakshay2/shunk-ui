@@ -1,9 +1,8 @@
 "use client"; // Ensure this is a Client Component
-import { TableHeaderField, TableRows } from "@/shared/DataTable/typings";
-import { useEffect, useState } from "react";
-import Skeleton from "@/shared/Skeleton";
 import { CoinData } from "@/app/api/coinData/route";
-import { Stepper } from "@/shared/Stepper/indes";
+import { TableHeaderField, TableRows } from "@/shared/DataTable/typings";
+import Skeleton from "@/shared/Skeleton";
+import { useEffect, useState } from "react";
 import { CoinList } from "./CoinList";
 
 const shimmerArrayLoop = new Array(8).fill(1);
@@ -71,7 +70,7 @@ export const CreateForm = () => {
 
   return (
     <div>
-      <Stepper />
+      {/* <Stepper /> */}
       <CoinList />
     </div>
   );
