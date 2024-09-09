@@ -14,6 +14,7 @@ import {
 import { Modal } from "@/shared/Modal";
 import Skeleton from "@/shared/Skeleton";
 import { useContract } from "@thirdweb-dev/react";
+import { FastAverageColor } from "fast-average-color";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { coinListApiResponse, CoinListData } from "../../../constants/coinList";
@@ -231,37 +232,46 @@ export const CoinList = () => {
 
   const [itemsContent, setItemContent] = useState<Item[]>([]);
   useEffect(() => {
-    setItemContent(
-      selectedCoinId.map((coinId) => {
-        const data = coinData.find((data) => data.symbol === coinId);
-        return {
-          id: data?.["_id"],
-          name: (
-            <li
-              key={coinId}
-              className=" inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white  text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
-            >
-              <div className="group flex justify-between w-full hover:text-indigo-600">
-                <div className="flex gap-8">
-                  <Image
-                    src={data.icon}
-                    alt={data?.name + "logo"}
-                    className="w-10 h-10 rounded-full	"
-                    width={32}
-                    height={32}
-                  />
-                  <div>
-                    <p>{data?.name}</p>
-                    <p>{data?.symbol}</p>
+    const setAsyncItems = async () => {
+      const fac = new FastAverageColor();
+      const result = await Promise.all(
+        selectedCoinId.map(async (coinId) => {
+          const data = coinData.find((data) => data.symbol === coinId);
+          const color = await fac.getColorAsync(data.icon);
+
+          return {
+            id: data?.["_id"],
+            name: (
+              <li
+                key={coinId}
+                className="inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-white text-gray-900 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg cursor-pointer"
+              >
+                <div className="group flex justify-between w-full hover:text-indigo-600">
+                  <div className="flex gap-8">
+                    <Image
+                      src={data.icon}
+                      alt={data?.name + " logo"}
+                      className="w-10 h-10 rounded-full"
+                      width={32}
+                      height={32}
+                    />
+                    <div>
+                      <p>{data?.name}</p>
+                      <p>{data?.symbol}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </li>
-          ),
-          percentage: 100 / selectedCoinId.length,
-        } as Item;
-      })
-    );
+              </li>
+            ),
+            percentage: 100 / selectedCoinId.length,
+            color: color?.hex ?? "",
+          } as Item;
+        })
+      );
+      setItemContent(result);
+    };
+
+    setAsyncItems();
   }, [coinData, selectedCoinId]);
 
   const handleChange = (id: number | string, value: number) => {
@@ -312,7 +322,7 @@ export const CoinList = () => {
             // TODO: Remove when integrating contract
             setTimeout(() => {
               setIsCreatingContract(false);
-            },2000)
+            }, 2000);
           }}
           onClickSecondaryButton={() => {
             setIsCreatingContract(false);
