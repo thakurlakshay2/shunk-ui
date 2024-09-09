@@ -213,7 +213,7 @@ export const CoinList = () => {
               <p>{(coinData?.priceUSD || 0).toFixed(4)}</p>
 
               <span>
-                <ProfitLoss percentage={coinData?.priceChange || 0} />
+                <ProfitLoss percentage={coinData?.percentChange || 0} />
               </span>
             </div>
           </div>

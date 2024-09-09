@@ -54,7 +54,7 @@ export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
       {items.map((item) => (
         <div
           key={item.id}
-          className={`w-full min-w-80 p-4 bg-[#ffffff] rounded-lg transform transition-all duration-300 hover:scale-105
+          className={`w-full min-w-80 p-4 bg-[#ffffff] rounded-lg transform transition-all duration-300 shadow-md hover:scale-105
             ${
               totalPercentage > 100
                 ? "hover:shadow-lg shadow-red-800 border-red-800 "
@@ -63,7 +63,7 @@ export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
           style={{
             borderColor: item.color,
             borderWidth: "1px",
-            boxShadow: `0 8px 16px -6px ${item.color}, 0 8px 12px -6px ${item.color}`,
+            // "&:hover" : {boxShadow: `0 8px 16px -6px ${item.color}, 0 8px 12px -6px ${item.color}`},
           }}
         >
           <div className="flex justify-between items-center">
