@@ -1,15 +1,15 @@
-"use server";
-import axios from "axios";
+import { CoinData } from "@/actionTypings/createForm";
+import axios from "@/shared/axios";
 
-export const oneInchList = async () => {
-  const response = await axios.get("https://api.1inch.dev/token/v1.2/8453", {
+export const coinDataList = async () => {
+  const response = await axios<CoinData[]>({
+    url: "https://shunk-service-production.up.railway.app/tokens",
     headers: {
-      Authorization: "Bearer XvuM4bVHatJL9dIBZuSAiFokoJMvVLmf",
       "Content-Type": "application/json",
       accept: "application/json",
     },
-    method: "get",
+    method: "GET",
   });
-  // console.log(response, "1inch");
+  console.log(response.data);
   return response.data;
 };
