@@ -76,7 +76,7 @@ export const Datatable: React.FC<DataTableProps> = ({
 
   return (
     <div className="flex flex-col 	" style={customStyles}>
-      <div className="overflow-x-auto pb-4 min-w-full">
+      <div className="overflow-x-auto pb-4 min-w-full z-10">
         <div className="block">
           <div className="overflow-x-auto w-full border rounded-lg border-gray-300 h-[60vh] thin-scrollbar bg-white">
             <table className="relative w-full rounded-xl">
