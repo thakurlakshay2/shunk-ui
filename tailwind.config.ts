@@ -20,6 +20,7 @@ const config: Config = {
       height: {
         "70vh": "70vh",
         "60vw": "60vw",
+        "50vh": "50vh",
       },
     },
     colors: {

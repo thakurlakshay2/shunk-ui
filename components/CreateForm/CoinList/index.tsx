@@ -16,12 +16,13 @@ import Skeleton from "@/shared/Skeleton";
 import { useContract } from "@thirdweb-dev/react";
 import { FastAverageColor } from "fast-average-color";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { coinListApiResponse, CoinListData } from "../../../constants/coinList";
 import { Item, PercentageDistributor } from "../../PercentageDistributor";
 import Checkbox from "../../primitives/Checkbox";
 import ProfitLoss from "../../shared/ProfitLoss";
 import { ShunkFactoryABI } from "../CONTRACT_ABI";
+import { Stepper, StepperInterface } from "@/shared/Stepper/index";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -114,6 +115,8 @@ export const CoinList = () => {
     ["name", "symbol"],
     input
   );
+
+  const [step, setStep] = useState<number>(1);
   const [isCreatingContract, setIsCreatingContract] = useState<boolean>(false);
 
   const { contract, isLoading, error } = useContract(
@@ -256,9 +259,8 @@ export const CoinList = () => {
                       height={32}
                     />
                     <div>
-                    <p className="text-xl pt-1">{data?.symbol}</p>
+                      <p className="text-xl pt-1">{data?.symbol}</p>
                       <p className="text-md pt-1">{data?.name}</p>
-                    
                     </div>
                   </div>
                 </div>
@@ -284,6 +286,154 @@ export const CoinList = () => {
     });
   };
 
+  const stepper: StepperInterface[] = [
+    {
+      id: 1,
+      content: <p>Details</p>,
+    },
+    {
+      id: 2,
+      content: <p>Fees</p>,
+    },
+    {
+      id: 3,
+      content: <p>Allocation </p>,
+    },
+  ];
+
+  const stepperContent = useMemo(() => {
+    switch (step) {
+      case 1:
+        return (
+          <form action="">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-x-8">
+              <div className="relative mb-6">
+                <label className="flex  items-center mb-2 text-gray-600 text-sm font-medium">
+                  {" "}
+                  Name{" "}
+                  <svg
+                    width="7"
+                    height="7"
+                    className="ml-1"
+                    viewBox="0 0 7 7"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.11222 6.04545L3.20668 3.94744L1.43679 5.08594L0.894886 4.14134L2.77415 3.18182L0.894886 2.2223L1.43679 1.2777L3.20668 2.41619L3.11222 0.318182H4.19105L4.09659 2.41619L5.86648 1.2777L6.40838 2.2223L4.52912 3.18182L6.40838 4.14134L5.86648 5.08594L4.09659 3.94744L4.19105 6.04545H3.11222Z"
+                      fill="#EF4444"
+                    />
+                  </svg>
+                </label>
+                <input
+                  type="text"
+                  id="default-search"
+                  className="block w-full h-11 px-5 py-2.5 leading-7 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none "
+                  placeholder="Enter Name Here"
+                />
+              </div>
+              <div className="relative mb-6">
+                <label className="flex  items-center mb-2 text-gray-600 text-sm font-medium">
+                  {" "}
+                  Contract Code
+                  <svg
+                    width="7"
+                    height="7"
+                    className="ml-1"
+                    viewBox="0 0 7 7"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.11222 6.04545L3.20668 3.94744L1.43679 5.08594L0.894886 4.14134L2.77415 3.18182L0.894886 2.2223L1.43679 1.2777L3.20668 2.41619L3.11222 0.318182H4.19105L4.09659 2.41619L5.86648 1.2777L6.40838 2.2223L4.52912 3.18182L6.40838 4.14134L5.86648 5.08594L4.09659 3.94744L4.19105 6.04545H3.11222Z"
+                      fill="#EF4444"
+                    />
+                  </svg>
+                </label>
+                <input
+                  type="text"
+                  id="default-search"
+                  className="block w-full h-11 px-5 py-2.5 leading-7 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none "
+                  placeholder="Write a Contract Code"
+                />
+              </div>
+            </div>
+
+            <div className="relative mb-6">
+              <label className="flex items-center mb-2 text-gray-600 text-sm font-medium">
+                {" "}
+                Contract Description{" "}
+                <svg
+                  width="7"
+                  height="7"
+                  className="ml-1"
+                  viewBox="0 0 7 7"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3.11222 6.04545L3.20668 3.94744L1.43679 5.08594L0.894886 4.14134L2.77415 3.18182L0.894886 2.2223L1.43679 1.2777L3.20668 2.41619L3.11222 0.318182H4.19105L4.09659 2.41619L5.86648 1.2777L6.40838 2.2223L4.52912 3.18182L6.40838 4.14134L5.86648 5.08594L4.09659 3.94744L4.19105 6.04545H3.11222Z"
+                    fill="#EF4444"
+                  ></path>
+                </svg>
+              </label>
+              <div className="flex">
+                <div className="relative w-full">
+                  <textarea
+                    className="block w-full h-40 px-4 py-2.5 text-base leading-7 font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-2xl placeholder-gray-400 focus:outline-none resize-none"
+                    placeholder="Give a Description"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setStep(2);
+              }}
+              className="w-52 h-12 bg-indigo-600 hover:bg-indigo-800 transition-all duration-700 rounded-full shadow-xs text-white text-base font-semibold leading-6"
+            >
+              Next
+            </button>
+          </form>
+        );
+
+      case 2:
+        return (
+          <p>
+            <div>
+              <button
+                onClick={() => {
+                  setStep((prev) => prev - 1);
+                }}
+                className="w-52 h-12 bg-indigo-600 hover:bg-indigo-800 transition-all duration-700 rounded-full shadow-xs text-white text-base font-semibold leading-6"
+              >
+                Prev
+              </button>
+              <button
+                onClick={() => {
+                  setStep((prev) => prev + 1);
+                }}
+                className="w-52 h-12 bg-indigo-600 hover:bg-indigo-800 transition-all duration-700 rounded-full shadow-xs text-white text-base font-semibold leading-6"
+              >
+                Next
+              </button>
+            </div>
+          </p>
+        );
+
+      case 3:
+        return (
+          <PercentageDistributor
+            items={itemsContent}
+            handleChange={handleChange}
+          ></PercentageDistributor>
+        );
+
+      default:
+        return <></>;
+    }
+  }, [itemsContent, step]);
   return (
     <div>
       <div className="max-w[80vw] p-8 min-w[50vw] h-full grid gap-4">
@@ -330,11 +480,13 @@ export const CoinList = () => {
             setOpenModal(false);
           }}
           modalContent={
-            <div className=" justify-center relative flex gap-10">
-              <PercentageDistributor
-                items={itemsContent}
-                handleChange={handleChange}
-              ></PercentageDistributor>
+            <div className=" h-[50vh] justify-center relative flex gap-10  ">
+              <div className="w-1/5 border-r-4 border-indigo-500">
+                <Stepper selectedId={step} list={stepper} />
+              </div>
+              <div className="w-4/5 align-left overflow-auto thin-scrollbar p-4 ">
+                {stepperContent}
+              </div>
             </div>
           }
         >
