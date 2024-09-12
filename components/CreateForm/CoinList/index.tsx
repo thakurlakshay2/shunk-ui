@@ -128,7 +128,7 @@ export const CoinList = () => {
   useEffect(() => {
     const getCoinList = async () => {
       const response = await axios.get<CoinData[]>(
-        "https://shunk-service-production.up.railway.app/tokens",
+        "https://api.shunk.io/tokens",
         {
           headers: {
             "Content-Type": "application/json",
