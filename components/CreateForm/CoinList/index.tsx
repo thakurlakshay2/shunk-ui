@@ -15,6 +15,7 @@ import { Modal } from "@/shared/Modal";
 import Skeleton from "@/shared/Skeleton";
 import { Stepper, StepperInterface } from "@/shared/Stepper/index";
 import { useContract } from "@thirdweb-dev/react";
+import axios from "axios";
 import { FastAverageColor } from "fast-average-color";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -126,10 +127,17 @@ export const CoinList = () => {
 
   useEffect(() => {
     const getCoinList = async () => {
-      const response = await fetch("/api/coinData");
-      const responseData: CoinData[] = await response?.json();
+      const response = await axios.get<CoinData[]>(
+        "https://shunk-service-production.up.railway.app/tokens",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      );
 
-      setCoinData(responseData);
+      setCoinData(response?.data);
     };
 
     getCoinList();

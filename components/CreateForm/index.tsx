@@ -1,8 +1,6 @@
 "use client"; // Ensure this is a Client Component
-import { CoinData } from "@/app/api/coinData/route";
 import { TableHeaderField, TableRows } from "@/shared/DataTable/typings";
 import Skeleton from "@/shared/Skeleton";
-import { useEffect, useState } from "react";
 import { CoinList } from "./CoinList";
 
 const shimmerArrayLoop = new Array(8).fill(1);
@@ -54,19 +52,6 @@ const dataRowsShimmer: TableRows[][] = shimmerArrayLoop.map(() => {
 
 const CONTRACT_ADDRESS = process.env.BASE_CONTRACT_ADDRESS;
 export const CreateForm = () => {
-  const [selectedCoinId, setSelectedCoinId] = useState<string[]>([]);
-  const [coinData, setCoinData] = useState<CoinData[]>([]);
-
-  useEffect(() => {
-    const getCoinList = async () => {
-      const response = await fetch("/api/coinData");
-      const responseData: CoinData[] = await response?.json();
-
-      setCoinData(responseData);
-    };
-
-    getCoinList();
-  }, []);
 
   return (
     <div>
