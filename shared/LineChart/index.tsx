@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from "react";
 import {
+  CategoryScale,
   Chart,
+  LinearScale,
   LineController,
   LineElement,
   PointElement,
-  LinearScale,
-  CategoryScale,
 } from "chart.js";
+import React, { useEffect, useRef } from "react";
 
 // Register Chart.js components
 Chart.register(
@@ -26,16 +26,6 @@ export interface LineChartProps {
 const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
 
-  const reduceArraySize = (data: number[]): number[] => {
-    const reducedArray: number[] = [];
-
-    for (let i = 0; i < data.length; i += 2) {
-      const avg = (data[i] + (data[i + 1] || 0)) / 2;
-      reducedArray.push(avg);
-    }
-
-    return reducedArray;
-  };
   const modifiedData = data;
   useEffect(() => {
     if (chartRef.current) {
@@ -62,6 +52,11 @@ const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
           },
           options: {
             responsive: true,
+            elements: {
+              point: {
+                radius: 0,
+              },
+            },
             scales: {
               x: {
                 display: false, // Hide x-axis
@@ -90,7 +85,7 @@ const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
     }
   }, []);
 
-  return <canvas key={uniqueId} ref={chartRef} width={170} height={85} />;
+  return <canvas key={uniqueId} ref={chartRef} width={170} height={60} />;
 };
 
 // Your data array
