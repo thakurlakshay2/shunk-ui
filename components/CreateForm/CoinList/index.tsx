@@ -256,7 +256,7 @@ export const CoinList = () => {
                       height={32}
                     />
                     <div>
-                    <p className="text-xl pt-1">{data?.symbol}</p>
+                    <p className="text-lg pt-1">{data?.symbol}</p>
                       <p className="text-md pt-1">{data?.name}</p>
                     
                     </div>
