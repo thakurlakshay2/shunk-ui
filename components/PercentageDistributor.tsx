@@ -52,7 +52,7 @@ export const PercentageDistributor: React.FC<PercentageDistributorProps> = ({
   // };
 
   return (
-    <div className="w-11/12 flex flex-col justify-center gap-y-3 gap-x-3 thin-scrollbar ">
+    <div className="w-11/12 flex flex-col justify-center gap-y-3 gap-x-3  ">
       {items.map((item) => (
         <div
           key={item.id}
