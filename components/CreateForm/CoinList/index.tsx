@@ -223,7 +223,7 @@ export const CoinList = () => {
           field: TableHeaderField.CHECKBOX,
           component: (
             <Checkbox
-              key={id}
+              key={"checkbox" + id}
               label={""}
               checked={selectedCoinId.includes(coinData.symbol)}
               onChange={() => {
@@ -243,7 +243,7 @@ export const CoinList = () => {
         {
           field: TableHeaderField.CRYPTO_INFO,
           component: (
-            <div className="flex gap-8">
+            <div key={"cryptoInfo" + coinData.name} className="flex gap-8">
               <Image
                 src={coinData.icon}
                 alt={coinData.name + "logo"}
@@ -262,7 +262,10 @@ export const CoinList = () => {
         {
           field: TableHeaderField.CRYPTO_PRICE,
           component: (
-            <div className="flex justify-end text-end">
+            <div
+              key={"cryptoPrice" + coinData.name}
+              className="flex justify-end text-end"
+            >
               <div>
                 {/* <p>{formatter.format(coinData.quote.USD.price)}</p> */}
                 <p>{(coinData?.priceUSD || 0).toFixed(4)}</p>
@@ -277,7 +280,7 @@ export const CoinList = () => {
         {
           field: TableHeaderField.MARKET_CAP,
           component: (
-            <p className="text-end">
+            <p key={"marketCap" + coinData.name} className="text-end">
               {formatMarketCap(coinData?.marketCap || 0)}
             </p>
           ),
@@ -285,7 +288,7 @@ export const CoinList = () => {
         {
           field: TableHeaderField.CHART,
           component: (
-            <div className="chart-container">
+            <div key={"chart" + coinData.name} className="chart-container">
               <LineChart
                 isGreen={(coinData?.percentChange || 0) > 0}
                 uniqueId={coinData.name}
