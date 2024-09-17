@@ -13,7 +13,10 @@ export enum TableHeaderField {
   COMPOSITION = "composition",
   AUM = "aum",
   CARET = "caret",
+  FAVOURITE = "FAVOURITE",
   CHART = "CHART",
+  PRICE = "PRICE",
+  ALLOCATION = "ALLOCATION"
 }
 export interface TableHeaders {
   isSearch?: boolean;
