@@ -43,10 +43,11 @@ export const Datatable: React.FC<DataTableProps> = ({
           .includes(searchQueries[idx].toLowerCase())
       )
     );
+
     setCurrentPage(0);
 
     setModifiedRows(filteredRows);
-  }, [isLoading, rows, searchQueries]);
+  }, [isLoading, searchQueries]);
 
   useEffect(() => {
     const start = currentPage * pageSize;
@@ -147,7 +148,7 @@ export const Datatable: React.FC<DataTableProps> = ({
               <tbody className="divide-y divide-gray-300">
                 {displayedRows.map((rowData, id) => (
                   <tr
-                    key={id}
+                    key={"dataTable" + id}
                     className="bg-white transition-all duration-300 hover:bg-gray-50"
                   >
                     {rowData.map((row, idx) => (
@@ -175,7 +176,7 @@ export const Datatable: React.FC<DataTableProps> = ({
                 pageSize={pageSize}
                 defaultSelectedPage={currentPage}
                 total={modifiedRows.length}
-                onClick={setCurrentPage}
+                onPageChange={setCurrentPage}
               />
             </nav>
           )}

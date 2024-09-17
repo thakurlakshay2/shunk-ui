@@ -67,8 +67,10 @@ const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
               {
                 label: "Data Points",
                 data: modifiedData,
-                borderColor: isGreen ? "rgb(34 197 94)" : "rgb(239 68 68)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                borderColor: isGreen ? "rgb(34 ,197, 94)" : "rgb(239, 68, 68)",
+                backgroundColor: isGreen
+                  ? "rgba(75, 192, 192, 0.2)"
+                  : "rgba(239, 68, 68 0.2)",
                 borderWidth: 2,
                 fill: true,
                 tension: 0.3, // Smooth curve for the line
@@ -108,7 +110,7 @@ const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
         };
       }
     }
-  }, []);
+  }, [data]);
 
   return <canvas key={uniqueId} ref={chartRef} width={170} height={60} />;
 };
