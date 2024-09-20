@@ -15,6 +15,7 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import { leaderBoardData } from "@/constants/leaderboard";
 import { CoinData } from "@/app/api/coinData/route";
+import FavoriteStar from "@/shared/Favorites";
 
 export default function Strategy() {
   const router = useRouter();
@@ -77,7 +78,8 @@ export default function Strategy() {
         field: TableHeaderField.FAVOURITE,
         component: (
           <div>
-            <IoStar color="yellow" />
+            <FavoriteStar />
+            {/* <IoStar color="yellow" /> */}
           </div>
         ),
         className: "p-2",
