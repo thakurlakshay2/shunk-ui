@@ -62,7 +62,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           );
         })}
       </div>
-      <a
+      <div
         className="text-gray-500 hover:text-gray-900 p-4 inline-flex items-center md:ml-8 ml-1 cursor-pointer"
         onClick={() => {
           if (defaultSelectedPage < totalPages - 1)
@@ -70,7 +70,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         }}
       >
         <span>Next</span>
-      </a>
+      </div>
     </nav>
   );
 };

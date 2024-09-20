@@ -149,7 +149,7 @@ export const Datatable: React.FC<DataTableProps> = ({
                 {displayedRows.map((rowData, id) => (
                   <tr
                     key={"dataTable" + id}
-                    className="bg-white transition-all duration-300 hover:bg-gray-50"
+                    className="bg-gray-50  transition-all duration-300 hover:bg-gray-100"
                   >
                     {rowData.map((row, idx) => (
                       <td
