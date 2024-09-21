@@ -26,7 +26,6 @@ export interface LineChartProps {
 const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
 
-  const modifiedData = data;
   useEffect(() => {
     if (chartRef.current) {
       const ctx = chartRef.current.getContext("2d");
@@ -34,14 +33,11 @@ const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
         const chartcreate = new Chart(ctx, {
           type: "line",
           data: {
-            labels: Array.from(
-              { length: modifiedData.length },
-              (_, i) => i + 1
-            ), // Labels for x-axis (index-based)
+            labels: Array.from({ length: data.length }, (_, i) => i + 1), // Labels for x-axis (index-based)
             datasets: [
               {
                 label: "Data Points",
-                data: modifiedData,
+                data: data,
                 borderColor: isGreen ? "rgb(34 ,197, 94)" : "rgb(239, 68, 68)",
                 backgroundColor: isGreen
                   ? "rgba(75, 192, 192, 0.2)"
@@ -81,13 +77,14 @@ const LineChart: React.FC<LineChartProps> = ({ uniqueId, data, isGreen }) => {
           },
         });
         return () => {
+          console.log("destroyeds");
           chartcreate.destroy();
         };
       }
     }
-  }, [data]);
+  }, [data, isGreen]);
 
-  return <canvas key={uniqueId} ref={chartRef} width={170} height={60} />;
+  return <canvas key={uniqueId} ref={chartRef} width={158} height={60} />;
 };
 
 // Your data array

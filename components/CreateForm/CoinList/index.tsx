@@ -32,7 +32,32 @@ const formatter = new Intl.NumberFormat("en-US", {
   currency: "USD",
   minimumFractionDigits: 4,
 });
-
+const FEES = [
+  {
+    id: 1,
+    heading: "Management Fees",
+    content:
+      "Flat fee charged to manage the vault. Measured as an annualized % of Total Value Locked.",
+  },
+  {
+    id: 1,
+    heading: "Performance Fees",
+    content:
+      "Fee charged based on the vault performance. Measured based on the difference between the vault’s current price and its high watermark (the highest previous point).",
+  },
+  {
+    id: 1,
+    heading: "Entry Fees",
+    content:
+      "Flat fee charged when user deposits into vault. Measured as a % of the deposit amount.",
+  },
+  {
+    id: 1,
+    heading: "Exit Fees",
+    content:
+      "Charged when user withdraws from vault. Measured as a % of the withdrawal amount.",
+  },
+];
 const formatMarketCap = (marketCap: number) => {
   if (marketCap > 1_000_000_000) {
     return (
@@ -107,46 +132,24 @@ const dataRowsShimmer: TableRows[][] = shimmerArrayLoop.map(() => {
       field: TableHeaderField.CHART,
       component: (
         <div className="w-full  place-items-end	">
-          <Skeleton isLoading={true} height="h-[60px] " width={"w-full"} />
+          <Skeleton
+            type="chart"
+            isLoading={true}
+            height="h-[60px] "
+            width={"w-full"}
+          />
         </div>
       ),
     },
   ];
 });
 
-const FEES = [
-  {
-    id: 1,
-    heading: "Management Fees",
-    content:
-      "Flat fee charged to manage the vault. Measured as an annualized % of Total Value Locked.",
-  },
-  {
-    id: 1,
-    heading: "Performance Fees",
-    content:
-      "Fee charged based on the vault performance. Measured based on the difference between the vault’s current price and its high watermark (the highest previous point).",
-  },
-  {
-    id: 1,
-    heading: "Entry Fees",
-    content:
-      "Flat fee charged when user deposits into vault. Measured as a % of the deposit amount.",
-  },
-  {
-    id: 1,
-    heading: "Exit Fees",
-    content:
-      "Charged when user withdraws from vault. Measured as a % of the withdrawal amount.",
-  },
-];
-
 const CONTRACT_ADDRESS = process.env.BASE_CONTRACT_ADDRESS;
 export const CoinList = () => {
   const [input, setInput] = useState<string>("");
   const [selectedCoinId, setSelectedCoinId] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  // const [coinData, setOneInchData] = useState<OneInchInterface[]>([]);
+
   const [coinData, setCoinData] = useState<CoinData[]>([]);
   const { filteredData } = useHandleSearch<CoinListData>(
     coinListApiResponse.data,
@@ -288,7 +291,10 @@ export const CoinList = () => {
         {
           field: TableHeaderField.CHART,
           component: (
-            <div key={"chart" + coinData.name} className="chart-container">
+            <div
+              key={"chart" + coinData.name}
+              className="chart-container w-full"
+            >
               <LineChart
                 isGreen={(coinData?.percentChange || 0) > 0}
                 uniqueId={coinData.name}
