@@ -19,7 +19,7 @@ const FavoriteStar: React.FC = () => {
         viewBox="0 0 24 24"
         strokeWidth={2}
         stroke=" rgb(37 99 235)"
-        className={`w-6 h-6 transition-all duration-400 ease-in-out ${
+        className={`w-6 h-6 transition-all duration-500 ease-in-out ${
           isFavorited ? "scale-100" : "scale-100 fill-none"
         }`}
       >
@@ -37,7 +37,7 @@ const FavoriteStar: React.FC = () => {
         viewBox="0 0 24 24"
         strokeWidth={2}
         stroke=" rgb(37 99 235)"
-        className={`absolute transition-all duration-400 ease-in-out ${
+        className={`absolute transition-all duration-500 ease-in-out ${
           isFavorited ? "w-6 h-6 scale-100" : "w-6 h-6 scale-0"
         }`}
       >

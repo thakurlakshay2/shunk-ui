@@ -3,6 +3,9 @@
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import "./globals.css";
 import { Sidebar } from "@/shared/Sidebar";
+import { useEffect } from "react";
+import ToastManager from "@/shared/Toast/toastManages";
+import { ToastProvider } from "@/shared/Toast/toastContext";
 
 const activeChain = "base"; // Set this to your desired blockchain
 
@@ -34,11 +37,14 @@ export default function RootLayout({
 
       <body className="overflow-y-scroll overflow-x-hidden">
         <ThirdwebProvider activeChain={activeChain}>
-          <div className="flex">
-            <Sidebar />
-            {children}
-          </div>
+          <ToastProvider>
+            <div className="flex">
+              <Sidebar />
+              {children}
+            </div>
+          </ToastProvider>
         </ThirdwebProvider>
+        <ToastManager />
         <script
           defer
           src="https://cdn.jsdelivr.net/npm/pagedone@1.2.1/src/js/pagedone.js"

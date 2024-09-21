@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { ModalProps } from "./typings";
 
 export const Modal: React.FC<ModalProps> = ({
+  heading,
   children,
   openModal,
   setOpenModal,
@@ -49,11 +50,9 @@ export const Modal: React.FC<ModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
-              <h4 className="text-base font-medium text-gray-900">
-                BUIDL YOUR OWN BAG - ALLOCATION
-              </h4>
+              <h4 className="text-base font-medium text-gray-900">{heading}</h4>
               <button
-                onClick={()=>setOpenModal(false)}
+                onClick={() => setOpenModal(false)}
                 aria-label="Close Modal"
                 className="text-gray-500 hover:text-gray-700"
               >

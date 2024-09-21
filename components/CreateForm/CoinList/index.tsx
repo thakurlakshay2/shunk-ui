@@ -582,6 +582,7 @@ export const CoinList = () => {
           })}
         </div>
         <Modal
+          heading="BUIDL YOUR OWN BAG - ALLOCATION"
           primaryButton={
             <button
               onClick={() => {

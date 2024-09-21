@@ -201,7 +201,7 @@ export default function Strategy() {
   return (
     <main className=" m-auto	 flex min-h-screen flex-col items-center px-24 py-8">
       <title>Leaderboard</title>
-      <Header goBack={() => router.push("/")} />
+      <Header />
       <div className="max-w[80vw] mt-16 p-8 min-w[50vw] h-full grid gap-4">
         <Datatable
           headers={tableHeaders}

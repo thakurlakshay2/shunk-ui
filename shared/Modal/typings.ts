@@ -1,6 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 export interface ModalProps {
+  heading: string | ReactNode;
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
   onClickPrimaryButton?: () => void;
