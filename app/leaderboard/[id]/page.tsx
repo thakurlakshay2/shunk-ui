@@ -28,6 +28,7 @@ import { CoinData } from "@/actionTypings/createForm";
 import axios from "axios";
 import { Modal } from "@/shared/Modal";
 import { useToast } from "@/shared/Toast/toastContext";
+import TransactionForm from "@/components/TransactionForm";
 
 const customTooltip = ({ point }) => {
   return (
@@ -51,7 +52,9 @@ const StrategyDetails = () => {
   const portfolio = leaderBoardData[Number(id)];
   const [selectedId, setSelectedId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  // const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openinvest, setOpenInvest] = useState(false);
+  const [openWithdraw, setOpenWithdraw] = useState(false);
   const { addToast } = useToast();
 
   for (let i = 0; i < DATA_COUNT; ++i) {
@@ -197,30 +200,21 @@ const StrategyDetails = () => {
             </button>
           }
           secondaryButton={
-            <button
-              onClick={() => {}}
-              className={`w-52 h-12 border ${
-                true
-                  ? "border-indigo-600 bg-transparent text-indigo-600 hover:bg-indigo-100 "
-                  : "bg-indigo-600 text-white hover:bg-indigo-800"
-              } transition-all duration-300 rounded-full shadow-xs text-base font-semibold leading-6`}
-            >
-              {true ? "Close" : "Prev"}
-            </button>
+            <></>
           }
-          openModal={openModal}
-          setOpenModal={setOpenModal}
+          openModal={openinvest}
+          setOpenModal={setOpenInvest}
           onClickPrimaryButton={() => {}}
           onClickSecondaryButton={() => {
             // setIsCreatingContract(false);
-            setOpenModal(false);
+            setOpenInvest(false);
           }}
-          modalContent={<></>}
+          modalContent={<TransactionForm isBuy strategy={portfolio} coinList={coinDataList} />}
         >
           {" "}
           <div
             onClick={() => {
-              setOpenModal(true);
+              setOpenInvest(true);
             }}
             className=" flex gap-4 whitespace-nowrap"
           >
@@ -252,7 +246,7 @@ const StrategyDetails = () => {
           </div>
         </Modal>
         <Modal
-          heading={`Withdrawing - ${portfolio.name}`}
+          heading={`Withdrawing - ${portfolio.name} (${100} ${portfolio?.code})`}
           primaryButton={
             <button
               onClick={() => {}}
@@ -266,30 +260,21 @@ const StrategyDetails = () => {
             </button>
           }
           secondaryButton={
-            <button
-              onClick={() => {}}
-              className={`w-52 h-12 border ${
-                true
-                  ? "border-indigo-600 bg-transparent text-indigo-600 hover:bg-indigo-100 "
-                  : "bg-indigo-600 text-white hover:bg-indigo-800"
-              } transition-all duration-300 rounded-full shadow-xs text-base font-semibold leading-6`}
-            >
-              {true ? "Close" : "Prev"}
-            </button>
+            <></>
           }
-          openModal={openModal}
-          setOpenModal={setOpenModal}
+          openModal={openWithdraw}
+          setOpenModal={setOpenWithdraw}
           onClickPrimaryButton={() => {}}
           onClickSecondaryButton={() => {
             // setIsCreatingContract(false);
-            setOpenModal(false);
+            setOpenWithdraw(false);
           }}
-          modalContent={<></>}
+          modalContent={<TransactionForm isBuy={false} strategy={portfolio} coinList={coinDataList} />}
         >
           {" "}
           <div
             onClick={() => {
-              setOpenModal(true);
+              setOpenWithdraw(true);
             }}
             className="flex ml-4 gap-4 whitespace-nowrap"
           >
@@ -409,10 +394,6 @@ const StrategyDetails = () => {
               <div className="flex gap-2 items-center rounded-full hover:bg-gray-200 pl-2 pr-2">
                 <IoThumbsUpSharp />
                 230
-              </div>
-              <div className="flex gap-2 items-center rounded-full hover:bg-gray-200 pl-2 pr-2">
-                <IoThumbsDownOutline />
-                12
               </div>
             </div>
           </div>

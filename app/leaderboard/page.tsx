@@ -13,7 +13,7 @@ import {
 import { STRATEGY_LIST_COLUMN_SIZES } from "@/constants/tableSizes";
 import Image from "next/image";
 import Header from "@/components/Header";
-import { leaderBoardData } from "@/constants/leaderboard";
+import { LeaderBoard, leaderBoardData } from "@/constants/leaderboard";
 import { CoinData } from "@/app/api/coinData/route";
 import AnimatedStar from "@/shared/AnimatedStar";
 import FavoriteStar from "@/shared/Favorites";
@@ -21,6 +21,7 @@ import FavoriteStar from "@/shared/Favorites";
 export default function Strategy() {
   const router = useRouter();
   const [coinDataList, setCoinData] = useState<CoinData[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
   useEffect(() => {
     const getCoinList = async () => {
       const response = await axios.get<CoinData[]>(
@@ -36,6 +37,20 @@ export default function Strategy() {
       setCoinData(response?.data);
     };
 
+    const getLeaderboard = async ()=>{
+      const response = await axios.get<LeaderBoard[]>("https://api.shunk.io/leaderboard",
+        {
+          headers:{
+            "Content-Type":"application/json",
+            accept:"application/json"
+          }
+        }
+      )
+      console.log(response);
+      setLeaderboard(response.data);
+    }
+
+    getLeaderboard()
     getCoinList();
   }, []);
 
@@ -72,13 +87,13 @@ export default function Strategy() {
       align: "text-end",
     },
   ];
-  const dataRows: TableRows[][] = leaderBoardData.map((coinData, key) => {
+  const dataRows: TableRows[][] = leaderboard.map((coinData, key) => {
     return [
       {
         field: TableHeaderField.FAVOURITE,
         component: (
           <div>
-            <AnimatedStar />
+            {/* <AnimatedStar /> */}
             <FavoriteStar />
             {/* <IoStar color="yellow" /> */}
           </div>
@@ -121,7 +136,7 @@ export default function Strategy() {
                     className={`animate-fade-in-right-20 w-6 h-6 border-2 border-white rounded-full`}
                     src={
                       coinDataList.find(
-                        (item) => item.symbol === coinData.coins[0]
+                        (item) => item.symbol === coinData.coins[0].name
                       )?.icon || ""
                     }
                   />
@@ -131,7 +146,7 @@ export default function Strategy() {
                     className={`animate-fade-in-right-30 w-6 h-6 border-2 border-white rounded-full`}
                     src={
                       coinDataList.find(
-                        (item) => item.symbol === coinData.coins[1]
+                        (item) => item.symbol === coinData.coins[1].name
                       )?.icon || ""
                     }
                   />
@@ -141,7 +156,7 @@ export default function Strategy() {
                     className={`animate-fade-in-right-40 w-6 h-6 border-2 border-white rounded-full`}
                     src={
                       coinDataList.find(
-                        (item) => item.symbol === coinData.coins[2]
+                        (item) => item.symbol === coinData.coins[2].name
                       )?.icon || ""
                     }
                   />
