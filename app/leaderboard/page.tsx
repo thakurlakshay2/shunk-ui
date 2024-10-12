@@ -78,9 +78,7 @@ export default function Strategy() {
         field: TableHeaderField.FAVOURITE,
         component: (
           <div>
-            <AnimatedStar />
             <FavoriteStar />
-            {/* <IoStar color="yellow" /> */}
           </div>
         ),
         className: "p-2",

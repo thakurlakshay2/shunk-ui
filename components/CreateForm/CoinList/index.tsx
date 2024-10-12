@@ -151,11 +151,11 @@ export const CoinList = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
 
   const [coinData, setCoinData] = useState<CoinData[]>([]);
-  const { filteredData } = useHandleSearch<CoinListData>(
-    coinListApiResponse.data,
-    ["name", "symbol"],
-    input
-  );
+  // const { filteredData } = useHandleSearch<CoinListData>(
+  //   coinListApiResponse.data,
+  //   ["name", "symbol"],
+  //   input
+  // );
 
   const [step, setStep] = useState<number>(1);
   const [isCreatingContract, setIsCreatingContract] = useState<boolean>(false);
@@ -314,7 +314,10 @@ export const CoinList = () => {
       const result = await Promise.all(
         selectedCoinId.map(async (coinId, id) => {
           const data = coinData.find((data) => data.symbol === coinId);
-          const color = await fac.getColorAsync(data.icon);
+          let color = "initial";
+          try {
+            color = (await fac.getColorAsync(data.icon))?.hex;
+          } catch (e) {}
           const adjust = 100 % selectedCoinId.length;
 
           return {
@@ -343,7 +346,7 @@ export const CoinList = () => {
             ),
             percentage:
               (id === 1 ? adjust : 0) + (100 - adjust) / selectedCoinId.length,
-            color: color?.hex ?? "",
+            color: color ?? "",
           } as Item;
         })
       );
@@ -411,7 +414,7 @@ export const CoinList = () => {
               <div className="relative mb-6">
                 <label className="flex  items-center mb-2 text-gray-600 text-sm font-medium">
                   {" "}
-                  Contract Code
+                  Symbol
                   <svg
                     width="7"
                     height="7"
@@ -430,7 +433,7 @@ export const CoinList = () => {
                   type="text"
                   id="default-search"
                   className="block w-full h-11 px-5 py-2.5 leading-7 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none "
-                  placeholder="Write a Contract Code"
+                  placeholder="Enter Symbol"
                 />
               </div>
             </div>
@@ -588,7 +591,7 @@ export const CoinList = () => {
           })}
         </div>
         <Modal
-          heading="BUIDL YOUR OWN BAG - ALLOCATION"
+          heading="BUILD YOUR OWN BAG - ALLOCATION"
           primaryButton={
             <button
               onClick={() => {
@@ -600,11 +603,8 @@ export const CoinList = () => {
                   }, 2000);
                 } else setStep((prev) => prev + 1);
               }}
-              className={`w-52 h-12 ${
-                step === 3
-                  ? "bg-purple-600 hover:bg-purple-800"
-                  : "bg-indigo-600 hover:bg-indigo-800"
-              } transition-all duration-300 rounded-full shadow-xs text-white text-base font-semibold leading-6`}
+              className={`w-52 h-12  bg-indigo-600 hover:bg-indigo-800
+               transition-all duration-300 rounded-full shadow-xs text-white text-base font-semibold leading-6`}
             >
               {step === 3 ? "Create" : "Next"}
             </button>
@@ -619,8 +619,8 @@ export const CoinList = () => {
               }}
               className={`w-52 h-12 border ${
                 step === 1
-                  ? "border-indigo-600 bg-transparent text-indigo-600 hover:bg-indigo-100 "
-                  : "bg-indigo-600 text-white hover:bg-indigo-800"
+                  ? "hidden "
+                  : "border-indigo-600 bg-transparent text-indigo-600 hover:bg-indigo-100 "
               } transition-all duration-300 rounded-full shadow-xs text-base font-semibold leading-6`}
             >
               {step === 1 ? "Close" : "Prev"}
@@ -635,7 +635,7 @@ export const CoinList = () => {
           }}
           modalContent={
             <div className=" h-[50vh] justify-center relative flex gap-10  ">
-              <div className="w-1/5 border-r-4 border-indigo-500">
+              <div className="w-1/5 border-r-2 border-grey-700">
                 <Stepper selectedId={step} list={stepper} />
               </div>
               <div className="w-4/5 align-left overflow-auto thin-scrollbar p-4 ">
@@ -647,8 +647,8 @@ export const CoinList = () => {
           <div className=" flex justify-between">
             <div className="content-center">
               {" "}
-              <p className=" text-center text-2xl -z-10 font-medium">
-                BUIDL your own bag (BYOB)
+              <p className="font-silkscreen text-center text-2xl -z-10 font-medium">
+                BUILD your own bag (BYOB)
               </p>
             </div>
             <div>
@@ -660,11 +660,11 @@ export const CoinList = () => {
                   setOpenModal(true);
                 }}
                 disabled={selectedCoinId.length === 0}
-                className={`modal-button relative items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all duration-300 rounded-xl group
+                className={`modal-button relative items-center justify-start px-6 py-3 overflow-hidden font-semibold transition-all duration-300 rounded-xl group
     ${
       selectedCoinId.length === 0
-        ? "text-sm bg-indigo-300 text-white font-semibold text-center shadow-xs cursor-not-allowed"
-        : "bg-indigo-500 text-base font-semibold group-hover:text-white"
+        ? " bg-indigo-300 text-white  text-center shadow-xs cursor-not-allowed"
+        : "bg-indigo-500 text-base  group-hover:text-white"
     }
   `}
               >
