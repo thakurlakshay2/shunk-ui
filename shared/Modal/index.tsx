@@ -50,7 +50,9 @@ export const Modal: React.FC<ModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
-              <h4 className="text-base font-medium text-gray-900">{heading}</h4>
+              <h4 className="font-silkscreen text-base font-medium text-gray-900">
+                {heading}
+              </h4>
               <button
                 onClick={() => setOpenModal(false)}
                 aria-label="Close Modal"

@@ -25,7 +25,7 @@ export const BubbleDrag: React.FC<BubbleDragProps> = ({
 }) => {
   const constraintsRef = useRef(null);
   const [dataset, setDataset] = useState(generateDataset());
-  const [showColor, setColor] = useState<string>();
+  const [showColor, setColor] = useState<string>("#ffff");
   useLayoutEffect(() => {
     const fac = new FastAverageColor();
 

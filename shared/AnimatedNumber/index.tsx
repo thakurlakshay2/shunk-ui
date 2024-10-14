@@ -28,9 +28,9 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value }) => {
     <div className="relative inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-indigo-800 bg-indigo-200 rounded-full overflow-hidden">
       <div
         className={clsx(
-          "absolute inset-0 flex items-center justify-center transition-transform duration-300",
+          "absolute  flex items-center justify-center transition-transform duration-300",
           {
-            "translate-y-0": !animating,
+            // "translate-y-0": !animating,
             "-translate-y-full": animating && direction === "up",
             "translate-y-full": animating && direction === "down",
           }
@@ -38,7 +38,7 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value }) => {
       >
         {displayValue}
       </div>
-      <div
+      {/* <div
         className={clsx(
           "absolute inset-0 flex items-center justify-center transition-transform duration-300",
           {
@@ -49,7 +49,7 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value }) => {
         )}
       >
         {value}
-      </div>
+      </div> */}
     </div>
   );
 };
