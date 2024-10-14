@@ -22,13 +22,14 @@ import { ResponsiveLine, Line, Serie } from "@nivo/line";
 import { ResponsivePie } from "@nivo/pie";
 import { linearGradientDef } from "@nivo/core";
 import usdcIcon from "@/public/usdc.png";
-import { leaderBoardData } from "@/constants/leaderboard";
+import { Strategy } from "@/constants/leaderboard";
 import Header from "@/components/Header";
 import { CoinData } from "@/actionTypings/createForm";
 import axios from "axios";
 import { Modal } from "@/shared/Modal";
 import { useToast } from "@/shared/Toast/toastContext";
 import TransactionForm from "@/components/TransactionForm";
+import Shimmer from "@/components/shared/Shimmer";
 
 const customTooltip = ({ point }) => {
   return (
@@ -49,7 +50,9 @@ const StrategyDetails = () => {
   const router = useRouter();
   const DATA_COUNT = 12;
   const labels = [];
-  const portfolio = leaderBoardData[Number(id)];
+
+  const [strategyData, setStrategyData] = useState<Strategy | null>(null);
+  const portfolio = strategyData;
   const [selectedId, setSelectedId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   // const [openModal, setOpenModal] = useState<boolean>(false);
@@ -73,7 +76,28 @@ const StrategyDetails = () => {
           },
         }
       );
+      const response2 = await axios.get<Strategy>(`https://api.shunk.io/bag/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      )
+      let strategy: Strategy;
+      if (response2) {
+        strategy = response2.data;
+        if (strategy?.chartData?.length) {
+          const len = strategy.chartData[0].data.length;
+          if (strategy.chartData[0].data[0].y < strategy.chartData[0].data[len - 1].y) {
+            strategy.chartData[0].color = "hsl(154, 70%, 80%)";
+          } else if (strategy.chartData[0].data[0].y > strategy.chartData[0].data[len - 1].y) {
+            strategy.chartData[0].color = "hsl(0, 70%, 80%)";
+          }
+        }
+      }
 
+      setStrategyData(strategy);
       setCoinData(response?.data);
     };
 
@@ -100,32 +124,34 @@ const StrategyDetails = () => {
     {
       field: TableHeaderField.ALLOCATION,
       component: "Allocation",
-      align: "flex-auto text-end",
+      align: "flex-auto text-right",
     },
   ];
 
-  const tableRows: TableRows[][] = portfolio.coins.map((item, key) => {
-    const coinInfo = coinDataList.find((val) => val.symbol === item);
-
+  const tableRows: TableRows[][] = (strategyData?.coins || [...Array(4)]).map((item, key) => {
+    const coinInfo = coinDataList.find((val) => val.symbol === item?.name);
     return [
       {
         field: TableHeaderField.CRYPTO_INFO,
         component: (
           <div className="flex gap-8">
-            {coinInfo && (
+            {coinInfo ? (
               <Image
                 src={coinInfo.icon}
                 alt={coinInfo.name + "logo"}
                 className="w-10 h-10 mt-1 rounded-full"
                 width={32}
                 height={32}
-              />
-            )}
+              />) : <Shimmer height={32} width={32} isRounded />
+            }
             <div>
               <p className="truncate w-48 flex gap-2 items-center">
-                {coinInfo?.name} <GoLinkExternal className="cursor-pointer" />
+                {strategyData ?
+                  <>
+                    {coinInfo?.name} <GoLinkExternal className="cursor-pointer" />
+                  </> : <Shimmer height={20} width={80} />}
               </p>
-              <p>{coinInfo?.symbol}</p>
+              <p>{coinInfo?.symbol?.length ? coinInfo?.symbol : <Shimmer height={15} width={40} customStyle="mt-2" />}</p>
             </div>
           </div>
         ),
@@ -135,18 +161,18 @@ const StrategyDetails = () => {
         field: TableHeaderField.CRYPTO_PRICE,
         component: (
           <div>
-            <div className="text-xs">${coinInfo?.priceUSD}</div>
-            <div className="font-bold">$23904</div>
+            {coinInfo ? <div className="text-xs">${coinInfo?.priceUSD}</div> : <Shimmer height={20} width={60} />}
+            {strategyData ? <div className="font-bold">$23904</div> : <Shimmer height={20} width={60} customStyle="mt-2" />}
           </div>
         ),
       },
       {
         field: TableHeaderField.MARKET_CAP,
-        component: <div>$234.4m</div>,
+        component: coinInfo ? <div>${(coinInfo?.marketCap / 1000000).toFixed(2)}m</div> : <Shimmer height={20} width={60} />,
       },
       {
         field: TableHeaderField.ALLOCATION,
-        component: <div className="text-end">25%</div>,
+        component: <div className="text-right">{coinInfo ? item?.allocation + "%" : <div className="flex justify-end"><Shimmer height={20} width={40} /></div>}</div>,
       },
     ];
   });
@@ -157,173 +183,180 @@ const StrategyDetails = () => {
       <div className="w-[90%] flex justify-between bg-white p-4 w-[100%] rounded-lg items-center">
         <div className="flex bg-white w-[100%] rounded-lg items-center gap-4">
           <div>
-            <Image
-              width={40}
-              height={40}
-              src={`https://effigy.im/a/${portfolio.address}.png`}
-              alt=""
-            />
+            {portfolio?.address?.length ?
+              <Image
+                width={40}
+                height={40}
+                src={`https://effigy.im/a/${portfolio?.address}.png`}
+                alt=""
+              /> : <Shimmer height={40} width={40} isRounded />}
           </div>
           <div>
-            <div className="font-silkscreen text-xl">{portfolio.name}</div>
+            <div className="font-silkscreen text-xl">{portfolio?.name?.length ? portfolio?.name : <Shimmer width={50} height={24} customStyle="rounded-sm" />}</div>
             <div className="flex gap-4">
-              <div
-                style={{ border: "1.5px solid black" }}
-                className="font-semibold text-sm shadow-md  pl-1 pr-1 rounded-md"
-              >
-                {portfolio.code}
-              </div>
-              <div
-                onClick={() => {
+              {portfolio?.code?.length ?
+                <div
+                  style={{ border: "1.5px solid black" }}
+                  className="font-semibold text-sm shadow-md  pl-1 pr-1 rounded-md"
+                >
+                  {portfolio?.code}
+                </div> : <Shimmer height={20} width={40} customStyle="rounded-sm mt-2" />}
+              <div>
+                {strategyData?.address?.length ? <span onClick={() => {
                   addToast("success !", "action success", "success");
                 }}
-                className="flex gap-2 items-center"
-              >
-                0x34urf9438rfedfrfsd{" "}
-                <GoLinkExternal className="cursor-pointer" />
+                  className="flex gap-2 items-center">
+                  {strategyData?.address}
+                  <GoLinkExternal className="cursor-pointer" />
+                </span> : <Shimmer height={20} width={100} customStyle="rounded-sm mt-2" />}
               </div>
             </div>
           </div>
         </div>
-        <Modal
-          heading={`Investing - ${portfolio.name}`}
-          primaryButton={
-            <button
-              onClick={() => {}}
-              className={`w-52 h-12 ${
-                true
-                  ? "bg-purple-600 hover:bg-purple-800"
-                  : "bg-indigo-600 hover:bg-indigo-800"
-              } transition-all duration-300 rounded-full shadow-xs text-white text-base font-semibold leading-6`}
-            >
-              {true ? "Create" : "Next"}
-            </button>
-          }
-          secondaryButton={
-            <></>
-          }
-          openModal={openinvest}
-          setOpenModal={setOpenInvest}
-          onClickPrimaryButton={() => {}}
-          onClickSecondaryButton={() => {
-            // setIsCreatingContract(false);
-            setOpenInvest(false);
-          }}
-          modalContent={<TransactionForm isBuy strategy={portfolio} coinList={coinDataList} />}
-        >
-          {" "}
-          <div
-            onClick={() => {
-              setOpenInvest(true);
-            }}
-            className=" flex gap-4 whitespace-nowrap"
-          >
-            <button className="relative group inline-flex items-center px-8 py-1.5 overflow-hidden text-lg font-medium text-customBlue border-2 border-customBlue rounded-full hover:text-white group hover:bg-gray-50">
-              <span className="absolute right-0 block w-full h-0 transition-all bg-customBlue opacity-100 group-hover:h-full top-1/2 group-hover:top-0 duration-400 ease"></span>
-
-              {/* Arrow with angled downward motion */}
-              <span className="absolute left-0 flex items-center justify-end w-10 h-10 duration-300 transform -translate-x-full group-hover:translate-x-0 ease">
-                <svg
-                  className="w-5 h-5 transform rotate-45 group-hover:-rotate-45 transition-transform duration-300 ease"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+        <div className="flex gap-4">
+          {strategyData ?
+            <Modal
+              heading={`Investing - ${portfolio?.name}`}
+              primaryButton={
+                <button
+                  onClick={() => { }}
+                  className={`w-52 h-12 ${true
+                    ? "bg-purple-600 hover:bg-purple-800"
+                    : "bg-indigo-600 hover:bg-indigo-800"
+                    } transition-all duration-300 rounded-full shadow-xs text-white text-base font-semibold leading-6`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  ></path>
-                </svg>
-              </span>
-
-              <span className="relative text-base font-semibold transition-all duration-300 group-hover:translate-x-3">
-                Invest
-              </span>
-            </button>
-          </div>
-        </Modal>
-        <Modal
-          heading={`Withdrawing - ${portfolio.name} (${100} ${portfolio?.code})`}
-          primaryButton={
-            <button
-              onClick={() => {}}
-              className={`w-52 h-12 ${
-                true
-                  ? "bg-purple-600 hover:bg-purple-800"
-                  : "bg-indigo-600 hover:bg-indigo-800"
-              } transition-all duration-300 rounded-full shadow-xs text-white text-base font-semibold leading-6`}
+                  {true ? "Create" : "Next"}
+                </button>
+              }
+              secondaryButton={
+                <></>
+              }
+              openModal={openinvest}
+              setOpenModal={setOpenInvest}
+              onClickPrimaryButton={() => { }}
+              onClickSecondaryButton={() => {
+                // setIsCreatingContract(false);
+                setOpenInvest(false);
+              }}
+              modalContent={<TransactionForm isBuy strategy={portfolio} coinList={coinDataList} />}
             >
-              {true ? "Create" : "Next"}
-            </button>
-          }
-          secondaryButton={
-            <></>
-          }
-          openModal={openWithdraw}
-          setOpenModal={setOpenWithdraw}
-          onClickPrimaryButton={() => {}}
-          onClickSecondaryButton={() => {
-            // setIsCreatingContract(false);
-            setOpenWithdraw(false);
-          }}
-          modalContent={<TransactionForm isBuy={false} strategy={portfolio} coinList={coinDataList} />}
-        >
-          {" "}
-          <div
-            onClick={() => {
-              setOpenWithdraw(true);
-            }}
-            className="flex ml-4 gap-4 whitespace-nowrap"
-          >
-            <button className="relative group inline-flex items-center px-8 py-1.5 overflow-hidden text-lg font-medium text-customBlue border-2 border-customBlue rounded-full hover:text-white group hover:bg-gray-50">
-              <span className="absolute left-0 block w-full h-0 transition-all bg-customBlue opacity-100 group-hover:h-full top-1/2 group-hover:top-0 duration-400 ease"></span>
+              {" "}
+              <div
+                onClick={() => {
+                  setOpenInvest(true);
+                }}
+                className=" flex gap-4 whitespace-nowrap"
+              >
+                <button className="relative group inline-flex items-center px-8 py-1.5 overflow-hidden text-lg font-medium text-customBlue border-2 border-customBlue rounded-full hover:text-white group hover:bg-gray-50">
+                  <span className="absolute right-0 block w-full h-0 transition-all bg-customBlue opacity-100 group-hover:h-full top-1/2 group-hover:top-0 duration-400 ease"></span>
 
-              {/* Arrow with angled upward motion from the right */}
-              <span className="absolute right-0 flex items-center justify-start w-10 h-10 duration-300 transform translate-x-full group-hover:translate-x-0 ease">
-                <svg
-                  className="w-5 h-5 transform rotate-45 group-hover:-rotate-45 transition-transform duration-300 ease"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+                  {/* Arrow with angled downward motion */}
+                  <span className="absolute left-0 flex items-center justify-end w-10 h-10 duration-300 transform -translate-x-full group-hover:translate-x-0 ease">
+                    <svg
+                      className="w-5 h-5 transform rotate-45 group-hover:-rotate-45 transition-transform duration-300 ease"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                      ></path>
+                    </svg>
+                  </span>
+
+                  <span className="relative text-base font-semibold transition-all duration-300 group-hover:translate-x-3">
+                    Invest
+                  </span>
+                </button>
+              </div>
+            </Modal>
+            :
+            <Shimmer width={111} height={40} isRounded customStyle="flex w-[100%]" />}
+          {strategyData ?
+            <Modal
+              heading={`Withdrawing - ${portfolio?.name} (${100} ${portfolio?.code})`}
+              primaryButton={
+                <button
+                  onClick={() => { }}
+                  className={`w-52 h-12 ${true
+                    ? "bg-purple-600 hover:bg-purple-800"
+                    : "bg-indigo-600 hover:bg-indigo-800"
+                    } transition-all duration-300 rounded-full shadow-xs text-white text-base font-semibold leading-6`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  ></path>
-                </svg>
-              </span>
+                  {true ? "Create" : "Next"}
+                </button>
+              }
+              secondaryButton={
+                <></>
+              }
+              openModal={openWithdraw}
+              setOpenModal={setOpenWithdraw}
+              onClickPrimaryButton={() => { }}
+              onClickSecondaryButton={() => {
+                // setIsCreatingContract(false);
+                setOpenWithdraw(false);
+              }}
+              modalContent={<TransactionForm isBuy={false} strategy={portfolio} coinList={coinDataList} />}
+            >
+              {" "}
+              <div
+                onClick={() => {
+                  setOpenWithdraw(true);
+                }}
+                className="flex gap-4 whitespace-nowrap"
+              >
+                <button className="relative group inline-flex items-center px-8 py-1.5 overflow-hidden text-lg font-medium text-customBlue border-2 border-customBlue rounded-full hover:text-white group hover:bg-gray-50">
+                  <span className="absolute left-0 block w-full h-0 transition-all bg-customBlue opacity-100 group-hover:h-full top-1/2 group-hover:top-0 duration-400 ease"></span>
 
-              {/* Text moves left when arrow arrives */}
-              <span className="relative text-base font-semibold transition-all duration-300 group-hover:-translate-x-3">
-                Withdraw
-              </span>
-            </button>
-          </div>
-        </Modal>
+                  {/* Arrow with angled upward motion from the right */}
+                  <span className="absolute right-0 flex items-center justify-start w-10 h-10 duration-300 transform translate-x-full group-hover:translate-x-0 ease">
+                    <svg
+                      className="w-5 h-5 transform rotate-45 group-hover:-rotate-45 transition-transform duration-300 ease"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      ></path>
+                    </svg>
+                  </span>
+
+                  {/* Text moves left when arrow arrives */}
+                  <span className="relative text-base font-semibold transition-all duration-300 group-hover:-translate-x-3">
+                    Withdraw
+                  </span>
+                </button>
+              </div>
+            </Modal>
+            :
+            <Shimmer height={40} width={111} isRounded customStyle="flex w-[100%]" />}
+        </div>
       </div>
       <div className="flex w-[90%] rounded-lg items-center gap-8 justify-space-between">
         <div className="flex-1 bg-white rounded-lg p-4">
           <div className="text-xs">TVL</div>
-          <div className="font-bold">{portfolio?.aum}</div>
+          <div className="font-bold">{portfolio?.aum?.length ? portfolio?.aum : <Shimmer width={50} height={20} />}</div>
         </div>
         <div className="flex-1 bg-white rounded-lg p-4">
           <div className="text-xs">Return</div>
-          <div
-            className={`font-bold text-${
-              Number(portfolio.change) > 0 ? "green" : "red"
-            }-500`}
+          {portfolio?.change.length ? <div
+            className={`font-bold text-${Number(portfolio?.change) > 0 ? "green" : "red"
+              }-500`}
           >
-            {Number(portfolio.change) > 0
-              ? "+" + portfolio.change
-              : portfolio.change}
+            {Number(portfolio?.change) > 0
+              ? "+" + portfolio?.change
+              : portfolio?.change}
             %
-          </div>
+          </div> : <Shimmer width={60} height={20} />}
         </div>
         <motion.div
           onClick={() => setModalOpen(true)}
@@ -350,7 +383,7 @@ const StrategyDetails = () => {
             className="bg-white-500"
           >
             <ResponsiveLine
-              data={portfolio.chartData}
+              data={strategyData?.chartData || []}
               margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
               xScale={{ type: "point" }}
               curve="natural"
@@ -367,10 +400,10 @@ const StrategyDetails = () => {
               }}
               defs={[
                 linearGradientDef("gradientA", [
-                  { offset: 0, color: portfolio.chartData[0].color },
+                  { offset: 0, color: strategyData?.chartData?.[0]?.color },
                   {
                     offset: 100,
-                    color: portfolio.chartData[0].color,
+                    color: strategyData?.chartData?.[0]?.color,
                     opacity: 0,
                   },
                 ]),
@@ -393,7 +426,7 @@ const StrategyDetails = () => {
             <div className="flex gap-2 bg-white rounded-full border border-gray-300 cursor-pointer">
               <div className="flex gap-2 items-center rounded-full hover:bg-gray-200 pl-2 pr-2">
                 <IoThumbsUpSharp />
-                230
+                {strategyData?.favoriteCounts}
               </div>
             </div>
           </div>
@@ -429,22 +462,12 @@ const StrategyDetails = () => {
                   className="absolute top-2 right-2 cursor-pointer"
                 />
               </div>
-              <div className="flex justify-between w-[100%] items-center">
-                <div className="text-sm">Management Fees</div>
-                <div className="font-bold">2%</div>
-              </div>
-              <div className="flex justify-between w-[100%] items-center">
-                <div className="text-sm">Performance Fees</div>
-                <div className="font-bold">2%</div>
-              </div>
-              <div className="flex justify-between w-[100%] items-center">
-                <div className="text-sm">Entry Fees</div>
-                <div className="font-bold">2%</div>
-              </div>
-              <div className="flex justify-between w-[100%] items-center">
-                <div className="text-sm">Exit Fees</div>
-                <div className="font-bold">2%</div>
-              </div>
+              {strategyData?.fees?.map((val) => {
+                return <div className="flex justify-between w-[100%] items-center">
+                  <div className="text-sm">{val.id}</div>
+                  <div className="font-bold">{val.data}%</div>
+                </div>
+              })}
             </div>
           </motion.div>
         )}

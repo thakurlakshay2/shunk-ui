@@ -6,7 +6,7 @@ import { useState } from "react";
 
 interface Props {
     isBuy: boolean;
-    strategy: Strategy;
+    strategy: Strategy | null;
     coinList: CoinData[];
 }
 
@@ -18,9 +18,9 @@ const TransactionForm: React.FC<Props> = ({ isBuy, strategy, coinList }) => {
     return <div>
         <div className="w-[100] flex justify-center">1 LXMI = &nbsp;<span className="font-semibold">{strategyRate}&nbsp;</span> USDC</div>
         <div className="overflow-y-scroll max-h-[200px]">
-            {strategy.coins.map((item, key) => {
+            {strategy?.coins.map((item, key) => {
                 const price = Math.random() * 1000;
-                const coinFound = coinList.find(coin => coin.symbol === item);
+                const coinFound = coinList.find(coin => coin.symbol === item.name);
                 const coinQuantity = Math.random() * 1000;
                 const sellCoinQuantity = Number(quantity.length ? quantity : "0") * coinQuantity / totalPortfolioQuantity
                 const allocatedAmount = isBuy ? Number(amount.length ? amount : "0") * 25 / 100 : sellCoinQuantity * price;
