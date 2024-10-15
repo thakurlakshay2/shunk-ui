@@ -14,7 +14,7 @@ import {
 import { Modal } from "@/shared/Modal";
 import Skeleton from "@/shared/Skeleton";
 import { Stepper, StepperInterface } from "@/shared/Stepper/index";
-import { useContract } from "@thirdweb-dev/react";
+import { useContract, useContractWrite } from "@thirdweb-dev/react";
 import axios from "axios";
 import { FastAverageColor } from "fast-average-color";
 import Image from "next/image";
@@ -144,7 +144,7 @@ const dataRowsShimmer: TableRows[][] = shimmerArrayLoop.map(() => {
   ];
 });
 
-const CONTRACT_ADDRESS = process.env.BASE_CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = "0x5BbD57Fc377cA22F26a714c53Eda3509f13B505B";
 export const CoinList = () => {
   const [input, setInput] = useState<string>("");
   const [selectedCoinId, setSelectedCoinId] = useState<string[]>([]);
@@ -160,11 +160,21 @@ export const CoinList = () => {
   const [step, setStep] = useState<number>(1);
   const [isCreatingContract, setIsCreatingContract] = useState<boolean>(false);
 
-  const { contract, isLoading, error } = useContract(
+  const { contract, isLoading, isError } = useContract(
     CONTRACT_ADDRESS,
     ShunkFactoryABI
   );
-
+  // const { mutateAsync, isLoading, error } = useContractWrite(
+  //   // contract,
+  //   "createToken"
+  // );
+  useEffect(() => {
+    console.log("contract");
+    console.log(contract);
+    console.log(isLoading);
+    console.log(isError);
+    console.log(CONTRACT_ADDRESS);
+  }, [contract, isError, isLoading]);
   useEffect(() => {
     const getCoinList = async () => {
       const response = await axios.get<CoinData[]>(
@@ -308,6 +318,7 @@ export const CoinList = () => {
   }, [coinData, selectedCoinId]);
 
   const [itemsContent, setItemContent] = useState<Item[]>([]);
+
   useEffect(() => {
     const setAsyncItems = async () => {
       const fac = new FastAverageColor();
@@ -379,6 +390,34 @@ export const CoinList = () => {
       content: <p>Allocation </p>,
     },
   ];
+
+  const createNewToken = async () => {
+    try {
+      // Prepare the initStrategy data
+      const initStrategy = selectedCoinId.map((coinId) => {
+        const coinInfo = coinData.find((data) => data.symbol === coinId);
+        return {
+          contractAddress: coinInfo.platforms.base,
+          proportion: 5,
+        };
+      });
+
+      // Define name and symbol for your new token
+      const tokenName = "Your Token Name";
+      const tokenSymbol = "YTN";
+
+      // Call the createToken function
+      const result = await contract.call("createToken", [
+        tokenName,
+        tokenSymbol,
+        initStrategy,
+      ]);
+
+      console.log("Token created successfully:", result);
+    } catch (error) {
+      console.error("Error creating token:", error);
+    }
+  };
 
   const stepperContent = useMemo(() => {
     switch (step) {
@@ -594,13 +633,11 @@ export const CoinList = () => {
           heading="BUILD YOUR OWN BAG - ALLOCATION"
           primaryButton={
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (step === 3) {
                   setIsCreatingContract(true);
-                  // TODO: Remove when integrating contract
-                  setTimeout(() => {
-                    setIsCreatingContract(false);
-                  }, 2000);
+                  await createNewToken();
+                  setIsCreatingContract(false);
                 } else setStep((prev) => prev + 1);
               }}
               className={`w-52 h-12  bg-indigo-600 hover:bg-indigo-800
