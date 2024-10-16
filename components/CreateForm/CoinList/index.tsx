@@ -2,7 +2,6 @@
 
 import { CoinData } from "@/app/api/coinData/route";
 import { CREATE_FORM_TABLE_COLUMN_SIZE } from "@/constants/tableSizes";
-import { useHandleSearch } from "@/hooks/useHandleSearch";
 import AnimatedNumber from "@/shared/AnimatedNumber";
 import { BubbleDrag } from "@/shared/BubbleDrag";
 import { Datatable } from "@/shared/DataTable";
@@ -11,21 +10,21 @@ import {
   TableHeaders,
   TableRows,
 } from "@/shared/DataTable/typings";
+import KatexNumber from "@/shared/KatexNumber";
+import LineChart from "@/shared/LineChart";
 import { Modal } from "@/shared/Modal";
 import Skeleton from "@/shared/Skeleton";
 import { Stepper, StepperInterface } from "@/shared/Stepper/index";
-import { useContract, useContractWrite } from "@thirdweb-dev/react";
+import Tooltip from "@/shared/Tooltip";
+import { useContract } from "@thirdweb-dev/react";
 import axios from "axios";
 import { FastAverageColor } from "fast-average-color";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { coinListApiResponse, CoinListData } from "../../../constants/coinList";
 import { Item, PercentageDistributor } from "../../PercentageDistributor";
 import Checkbox from "../../primitives/Checkbox";
 import ProfitLoss from "../../shared/ProfitLoss";
 import { ShunkFactoryABI } from "../CONTRACT_ABI";
-import LineChart from "@/shared/LineChart";
-import Tooltip from "@/shared/Tooltip";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -281,7 +280,13 @@ export const CoinList = () => {
             >
               <div>
                 {/* <p>{formatter.format(coinData.quote.USD.price)}</p> */}
-                <p>{(coinData?.priceUSD || 0).toFixed(4)}</p>
+                <p>
+                  {coinData?.priceUSD < 0.0001 ? (
+                    <KatexNumber price={coinData?.priceUSD} />
+                  ) : (
+                    (coinData?.priceUSD || 0).toFixed(4)
+                  )}
+                </p>
 
                 <span>
                   <ProfitLoss percentage={coinData?.percentChange || 0} />

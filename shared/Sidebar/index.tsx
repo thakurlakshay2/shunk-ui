@@ -33,7 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({}) => {
     },
     {
       id: 3,
-      name: "LeaderBoard",
+      name: "Leaderboard",
       redirection: "/leaderboard",
       lottieIcon: AssetsImg.ic_leaderboard,
     },
