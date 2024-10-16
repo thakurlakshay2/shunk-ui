@@ -1,35 +1,30 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  IoThumbsUpOutline,
-  IoThumbsUpSharp,
-  IoThumbsDownOutline,
-  IoThumbsDownSharp,
-  IoClose,
-} from "react-icons/io5";
-import { GoLinkExternal } from "react-icons/go";
-import { useRouter, useParams } from "next/navigation";
+import { CoinData } from "@/actionTypings/createForm";
+import Header from "@/components/Header";
+import TransactionForm from "@/components/TransactionForm";
+import Shimmer from "@/components/shared/Shimmer";
+import { Strategy } from "@/constants/leaderboard";
 import { Datatable } from "@/shared/DataTable";
-import React, { useEffect, useState } from "react";
 import {
   TableHeaderField,
   TableHeaders,
   TableRows,
 } from "@/shared/DataTable/typings";
-import Image from "next/image";
-import { ResponsiveLine, Line, Serie } from "@nivo/line";
-import { ResponsivePie } from "@nivo/pie";
-import { linearGradientDef } from "@nivo/core";
-import usdcIcon from "@/public/usdc.png";
-import { Strategy } from "@/constants/leaderboard";
-import Header from "@/components/Header";
-import { CoinData } from "@/actionTypings/createForm";
-import axios from "axios";
 import { Modal } from "@/shared/Modal";
 import { useToast } from "@/shared/Toast/toastContext";
-import TransactionForm from "@/components/TransactionForm";
-import Shimmer from "@/components/shared/Shimmer";
+import { linearGradientDef } from "@nivo/core";
+import { ResponsiveLine } from "@nivo/line";
+import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { GoLinkExternal } from "react-icons/go";
+import {
+  IoClose,
+  IoThumbsUpSharp,
+} from "react-icons/io5";
 
 const customTooltip = ({ point }) => {
   return (
@@ -102,7 +97,7 @@ const StrategyDetails = () => {
     };
 
     getCoinList();
-  }, []);
+  }, [id]);
 
   const tableHeaders: TableHeaders[] = [
     {
@@ -462,8 +457,8 @@ const StrategyDetails = () => {
                   className="absolute top-2 right-2 cursor-pointer"
                 />
               </div>
-              {strategyData?.fees?.map((val) => {
-                return <div className="flex justify-between w-[100%] items-center">
+              {strategyData?.fees?.map((val, idx) => {
+                return <div className="flex justify-between w-[100%] items-center" key={"fees-"+idx}>
                   <div className="text-sm">{val.id}</div>
                   <div className="font-bold">{val.data}%</div>
                 </div>

@@ -1,23 +1,22 @@
 "use client";
 
-import axios from "axios";
-import { IoCaretForward, IoStarOutline, IoStar } from "react-icons/io5";
-import { useRouter } from "next/navigation";
+import { CoinData } from "@/app/api/coinData/route";
+import Header from "@/components/Header";
+import Shimmer from "@/components/shared/Shimmer";
+import { LeaderBoard } from "@/constants/leaderboard";
+import { STRATEGY_LIST_COLUMN_SIZES } from "@/constants/tableSizes";
 import { Datatable } from "@/shared/DataTable";
-import React, { useEffect, useState } from "react";
 import {
   TableHeaderField,
   TableHeaders,
   TableRows,
 } from "@/shared/DataTable/typings";
-import { STRATEGY_LIST_COLUMN_SIZES } from "@/constants/tableSizes";
-import Image from "next/image";
-import Header from "@/components/Header";
-import { LeaderBoard } from "@/constants/leaderboard";
-import { CoinData } from "@/app/api/coinData/route";
-import AnimatedStar from "@/shared/AnimatedStar";
 import FavoriteStar from "@/shared/Favorites";
-import Shimmer from "@/components/shared/Shimmer";
+import axios from "axios";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { IoCaretForward } from "react-icons/io5";
 
 export default function Strategy() {
   const router = useRouter();
@@ -40,18 +39,19 @@ export default function Strategy() {
     };
 
     const getLeaderboard = async () => {
-      const response = await axios.get<LeaderBoard[]>("https://api.shunk.io/leaderboard",
+      const response = await axios.get<LeaderBoard[]>(
+        "https://api.shunk.io/leaderboard",
         {
           headers: {
             "Content-Type": "application/json",
-            accept: "application/json"
-          }
+            accept: "application/json",
+          },
         }
-      )
+      );
       setLeaderboard(response.data);
-    }
+    };
 
-    getLeaderboard()
+    getLeaderboard();
     getCoinList();
   }, []);
 
@@ -88,7 +88,9 @@ export default function Strategy() {
       align: "text-end",
     },
   ];
-  const dataRows: TableRows[][] = (!isLoading ? leaderboard : [...Array(5)]).map((coinData, key) => {
+  const dataRows: TableRows[][] = (
+    !isLoading ? leaderboard : [...Array(5)]
+  ).map((coinData, key) => {
     return [
       {
         field: TableHeaderField.FAVOURITE,
@@ -103,17 +105,31 @@ export default function Strategy() {
         field: TableHeaderField.CREATOR,
         component: (
           <div className="flex gap-2 items-center font-semibold text-sm">
-            {isLoading ? <Shimmer height={40} width={40} isRounded /> : <Image
-              src={"https://pagedone.io/asset/uploads/1704275541.png"}
-              alt={"profile icon"}
-              className="w-10 h-10 mt-1"
-              width={64}
-              height={64}
-            />}
+            {isLoading ? (
+              <Shimmer height={40} width={40} isRounded />
+            ) : (
+              <Image
+                src={"https://pagedone.io/asset/uploads/1704275541.png"}
+                alt={"profile icon"}
+                className="w-10 h-10 mt-1"
+                width={64}
+                height={64}
+              />
+            )}
             <div>
-              <div>{isLoading ? <Shimmer height={20} width={50} /> : coinData?.name}</div>
+              <div>
+                {isLoading ? (
+                  <Shimmer height={20} width={50} />
+                ) : (
+                  coinData?.name
+                )}
+              </div>
               <div className="text-gray-500 text-xs">
-                {isLoading ? <Shimmer height={15} width={40} customStyle="mt-2" /> : coinData?.address?.slice(0, 5) + "..."}
+                {isLoading ? (
+                  <Shimmer height={15} width={40} customStyle="mt-2" />
+                ) : (
+                  coinData?.address?.slice(0, 5) + "..."
+                )}
               </div>
             </div>
           </div>
@@ -131,33 +147,36 @@ export default function Strategy() {
                     return <img className={`animate-fade-in-right-${2 + key2}0 w-6 h-6 border-2 border-white rounded-full`} src={coinDataList.find(item => item.symbol === coin)?.icon || ""} />
                   })} */}
                 {coinData?.coins?.length > 0 && (
-                  <img
+                  <Image
                     className={`animate-fade-in-right-20 w-6 h-6 border-2 border-white rounded-full`}
                     src={
                       coinDataList.find(
                         (item) => item.symbol === coinData.coins[0].name
                       )?.icon || ""
                     }
+                    alt={coinData.coins[0].name + "-coin"}
                   />
                 )}
                 {coinData?.coins?.length > 1 && (
-                  <img
+                  <Image
                     className={`animate-fade-in-right-30 w-6 h-6 border-2 border-white rounded-full`}
                     src={
                       coinDataList.find(
                         (item) => item.symbol === coinData.coins[1].name
                       )?.icon || ""
                     }
+                    alt={coinData.coins[1].name + "-coin"}
                   />
                 )}
                 {coinData?.coins?.length > 2 && (
-                  <img
+                  <Image
                     className={`animate-fade-in-right-40 w-6 h-6 border-2 border-white rounded-full`}
                     src={
                       coinDataList.find(
                         (item) => item.symbol === coinData.coins[2].name
                       )?.icon || ""
                     }
+                    alt={coinData.coins[2].name + "-coin"}
                   />
                 )}
                 {coinData?.coins?.length > 3 ? (
@@ -166,12 +185,34 @@ export default function Strategy() {
                   </div>
                 ) : null}
               </div>
-            ) : <div className="relative h-[24px]">
-              <Shimmer height={24} width={24} isRounded customStyle="absolute left-0" />
-              <Shimmer height={24} width={24} isRounded customStyle="absolute left-4" />
-              <Shimmer height={24} width={24} isRounded customStyle="absolute left-8" />
-              <Shimmer height={24} width={24} isRounded customStyle="absolute left-12" />
-            </div>}
+            ) : (
+              <div className="relative h-[24px]">
+                <Shimmer
+                  height={24}
+                  width={24}
+                  isRounded
+                  customStyle="absolute left-0"
+                />
+                <Shimmer
+                  height={24}
+                  width={24}
+                  isRounded
+                  customStyle="absolute left-4"
+                />
+                <Shimmer
+                  height={24}
+                  width={24}
+                  isRounded
+                  customStyle="absolute left-8"
+                />
+                <Shimmer
+                  height={24}
+                  width={24}
+                  isRounded
+                  customStyle="absolute left-12"
+                />
+              </div>
+            )}
           </div>
         ),
         className: "p-2",
@@ -189,16 +230,23 @@ export default function Strategy() {
         field: TableHeaderField.PRICE,
         component: (
           <div className="pl-4 font-semibold text-sm">
-            <div>{isLoading ? <Shimmer height={15} width={40} /> : coinData?.price}</div>
-            {isLoading ? <Shimmer height={15} width={30} customStyle="mt-2" /> : <div
-              className={`text-${Number(coinData?.change) > 0 ? "green" : "red"
+            <div>
+              {isLoading ? <Shimmer height={15} width={40} /> : coinData?.price}
+            </div>
+            {isLoading ? (
+              <Shimmer height={15} width={30} customStyle="mt-2" />
+            ) : (
+              <div
+                className={`text-${
+                  Number(coinData?.change) > 0 ? "green" : "red"
                 }-500 text-xs`}
-            >
-              {Number(coinData?.change) > 0
-                ? "+" + coinData?.change
-                : coinData?.change}
-              %
-            </div>}
+              >
+                {Number(coinData?.change) > 0
+                  ? "+" + coinData?.change
+                  : coinData?.change}
+                %
+              </div>
+            )}
           </div>
         ),
         className: "p-2",

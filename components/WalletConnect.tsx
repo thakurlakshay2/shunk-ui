@@ -27,9 +27,10 @@ export default function WalletConnect() {
             onClick={() => switchNetwork && switchNetwork(BASE_CHAIN_ID)}
           >
               {isMismatch ? (
-                <img
+                <Image
                   className="absolute -top-3 -right-1 h-4"
                   src={exclamationIcon.src}
+                  alt="wrong-network"
                 />
               ) : null}
             <Image
