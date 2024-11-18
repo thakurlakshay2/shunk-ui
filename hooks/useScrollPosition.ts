@@ -1,14 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
-import { Pagination } from "../Pagination";
-import {
-  tableHeadingClassName,
-  tableRowsStringClassName,
-} from "../styles/commonStyles";
-import { DataTableProps, TableRows } from "./typings";
 
 // Custom hook for scroll position detection
 export const useScrollPosition = (

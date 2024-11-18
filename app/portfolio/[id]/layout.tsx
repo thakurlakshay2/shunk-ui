@@ -1,20 +1,8 @@
+import { portfolioTabList } from "@/constants/leaderboard";
 import { PORTFOLIO_ROUTES, PortfolioRouteType } from "@/constants/routes";
 import { Tabs } from "@/shared/Tabs";
-import { TabList } from "@/shared/Tabs/typings";
 import { notFound } from "next/navigation";
 
-export const portfolioTabList: TabList[] = [
-  {
-    id: "invested",
-    value: "Invested",
-    redirection: "/portfolio/invested",
-  },
-  {
-    id: "bag",
-    value: "Bag",
-    redirection: "/portfolio/bag",
-  },
-];
 export default function PortfolioLayout({
   children,
   params,

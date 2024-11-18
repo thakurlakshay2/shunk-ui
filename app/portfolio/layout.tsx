@@ -2,18 +2,6 @@ import Header from "@/components/Header";
 import { Tabs } from "@/shared/Tabs";
 import { TabList } from "@/shared/Tabs/typings";
 
-export const portfolioTabList: TabList[] = [
-  {
-    id: "1",
-    value: "Invested",
-    redirection: "/portfolio/invested",
-  },
-  {
-    id: "2",
-    value: "Bag",
-    redirection: "/portfolio/bag",
-  },
-];
 export default function PortfolioLayout({
   children,
   params,
