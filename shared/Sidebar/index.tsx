@@ -173,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({}) => {
               <Link href={settingsItem.redirection}>
                 <div>
                   <div
-                    className={`p-3 rounded-lg items-center inline-flex ${
+                    className={`p-3 rounded-lg items-center flex items-center ${
                       settingsItem.redirection === pathname
                         ? "bg-gray-100"
                         : "bg-white hover:bg-gray-50"
