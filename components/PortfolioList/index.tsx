@@ -1,9 +1,6 @@
 "use client"; // Ensure this is a Client Component
 
-import {
-  CREATE_FORM_TABLE_COLUMN_SIZE,
-  PORTFOLIO_FORM_TABLE_COLUMN_SIZE,
-} from "@/constants/tableSizes";
+import { PORTFOLIO_FORM_TABLE_COLUMN_SIZE } from "@/constants/tableSizes";
 import { Datatable } from "@/shared/DataTable";
 import {
   TableHeaderField,
@@ -14,13 +11,12 @@ import KatexNumber from "@/shared/KatexNumber";
 import Skeleton from "@/shared/Skeleton";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import ProfitLoss from "../shared/ProfitLoss";
 // import { portfolioListData } from "./constant";
 import DropDown from "@/shared/DropDown";
 
-import { PortfolioListProps, PortfolioTableData } from "./typings";
-import axios from "axios";
+import { PortfolioListProps } from "./typings";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -43,6 +39,7 @@ const dataRowsShimmer: TableRows[][] = shimmerArrayLoop.map(() => {
         </div>
       ),
       className: "p-5",
+      isMobile: true,
     },
     {
       field: TableHeaderField.LTP,
@@ -74,6 +71,7 @@ const dataRowsShimmer: TableRows[][] = shimmerArrayLoop.map(() => {
           <Skeleton isLoading={true} height="h-5" width={"w-full"} />
         </div>
       ),
+      isMobile: true,
     },
 
     {
@@ -90,6 +88,7 @@ const dataRowsShimmer: TableRows[][] = shimmerArrayLoop.map(() => {
           <Skeleton isLoading={true} height="h-4" width={"w-1/4"} />
         </div>
       ),
+      isMobile: true,
     },
     {
       field: TableHeaderField.TRADE_CURRENCY_2,
@@ -116,6 +115,7 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
       component: "Coin",
       align: "text-start",
       isSearch: true,
+      isMobile: true,
     },
     {
       field: TableHeaderField.LTP,
@@ -133,7 +133,7 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
       align: "justify-end ",
     },
     {
-      field: TableHeaderField.TRADE_CURRENCY,
+      field: TableHeaderField.TRADE_CURRENCY_1,
       component: "",
       align: "flex-auto justify-end ",
     },
@@ -141,9 +141,10 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
       field: TableHeaderField.CURRENT_VALUE,
       component: "Current Value",
       align: "justify-end ",
+      isMobile: true,
     },
     {
-      field: TableHeaderField.TRADE_CURRENCY,
+      field: TableHeaderField.TRADE_CURRENCY_2,
       component: "",
       align: "flex-auto text-end",
     },
@@ -151,9 +152,10 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
       field: TableHeaderField.CHANGE_WITH_PERCENTAGE,
       component: "Profit/Loss",
       align: "justify-end text-end",
+      isMobile: true,
     },
     {
-      field: TableHeaderField.TRADE_CURRENCY,
+      field: TableHeaderField.TRADE_CURRENCY_3,
       component: "",
       align: "flex-auto justify-end ",
     },
@@ -170,26 +172,27 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
         {
           field: TableHeaderField.BAG_INFO,
           component: (
-            <div key={"BagInfo" + coinData.bagCode} className="flex gap-8">
-              <Image
+            <div key={"BagInfo" + coinData.bagSymbol} className="flex gap-8">
+              {/* <Image
                 src={coinData.bagSymbol}
-                alt={coinData.bagCode + "logo"}
+                alt={coinData.bagSymbol + "logo"}
                 className="w-10 h-10 mt-1 rounded-full"
                 width={32}
                 height={32}
-              />
+              /> */}
               <div>
-                <p className="truncate ...  font-bold text-lg	">
+                <p className="truncate ...  font-semibold md:font-bold text-base md:text-lg	">
                   {coinData.bagName.substring(0, 15) +
                     (coinData.bagName.length > 15 ? "..." : "")}
                 </p>
-                <p className="text-base	 font-silkscreen  text-gray-700">
-                  {coinData.bagCode}
+                <p className="text-sm md:text-base	 font-silkscreen  text-gray-700">
+                  {coinData.bagSymbol}
                 </p>
               </div>
             </div>
           ),
-          searchText: coinData.bagName.concat(",", coinData.bagCode),
+          searchText: coinData.bagName.concat(",", coinData.bagSymbol),
+          isMobile: true,
         },
         {
           field: TableHeaderField.LTP,
@@ -252,7 +255,6 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
               className="text-base flex justify-end text-end"
             >
               <div>
-                {/* <p>{formatter.format(coinData.quote.USD.price)}</p> */}
                 <p>
                   {coinData?.currentValue < 0.0001 ? (
                     <KatexNumber price={coinData?.ltp} />
@@ -263,10 +265,11 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
               </div>
             </div>
           ),
+          isMobile: true,
         },
 
         {
-          field: TableHeaderField.TRADE_CURRENCY_3,
+          field: TableHeaderField.TRADE_CURRENCY_2,
           component: <div key={"curreny" + coinData.bagName}>USD</div>,
           className: "font-silkscreen text-gray-700	",
         },
@@ -294,9 +297,10 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
               </div>
             </div>
           ),
+          isMobile: true,
         },
         {
-          field: TableHeaderField.TRADE_CURRENCY_2,
+          field: TableHeaderField.TRADE_CURRENCY_3,
           component: <div key={"curreny" + coinData.bagName}>USD</div>,
           className: "pt-5 content-start	font-silkscreen text-gray-700	",
         },
@@ -321,7 +325,7 @@ export const PortfolioList: React.FC<PortfolioListProps> = ({
   }, [portfolioListData]);
 
   return (
-    <div className="mt-8 w-full   h-full ">
+    <div className=" justify-self-center	mt-8 w-11/12 md:w-full   h-full ">
       <Datatable
         headers={tableHeaders}
         rows={dataRows?.length === 0 ? dataRowsShimmer : dataRows}
