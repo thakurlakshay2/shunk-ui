@@ -64,9 +64,9 @@ export default function RootLayout({
             </div>
             <div className="flex min-h-screen">
               <Sidebar />
-              <div className="flex flex-col w-full">
+              <div className=" flex flex-col w-full">
                 <Navigation />
-                <div>{children}</div>
+                <div className="overflow-auto h-screen">{children}</div>
               </div>
             </div>
           </ToastProvider>

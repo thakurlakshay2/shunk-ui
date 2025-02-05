@@ -24,8 +24,12 @@ export default function PortfolioLayout({
 
   return (
     <section className="w-full h-full md:h-[85vh]">
-      <div className="w-full content-start	">
-        <Tabs tabList={portfolioTabList} selected={params.id} />
+      <div className="w-full content-start mt-8 w-full	">
+        <Tabs
+          tabList={portfolioTabList}
+          selected={params.id}
+          variant="filled"
+        />
       </div>
       {children}
     </section>

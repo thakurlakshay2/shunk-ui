@@ -2,6 +2,7 @@ export interface TabsProps {
   tabList: TabList[];
   onChange?: (tabId: string) => void;
   selected?: string;
+  variant?: "outlined" | "filled";
 }
 
 export interface TabList {
