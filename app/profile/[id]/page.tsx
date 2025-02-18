@@ -4,7 +4,6 @@ import { AssetsImg } from "@/public";
 export default function Page({ params }: { params: { slug: string } }) {
   return (
     <div>
-      My Post: {params.slug}
       <ProfilePage
         name="John Doe"
         email="john.doe@example.com"

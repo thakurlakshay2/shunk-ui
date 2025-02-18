@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -28,13 +29,15 @@ const ProfilePage: React.FC<ProfileProps> = ({
           className="flex flex-col items-center space-y-4"
         >
           <div className="relative">
-            <Image
-              src={profileImage}
-              alt={`${name}'s profile`}
-              width={150}
-              height={150}
-              className="rounded-full border-4 border-blue-200 shadow-lg"
-            />
+            {profileImage && (
+              <Image
+                src={profileImage}
+                alt={`${name}'s profile`}
+                width={150}
+                height={150}
+                className="rounded-full border-4 border-blue-200 shadow-lg"
+              />
+            )}
             <motion.div
               className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2"
               initial={{ scale: 0 }}
