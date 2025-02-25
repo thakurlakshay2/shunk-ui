@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const menuItems = [
@@ -15,6 +16,7 @@ const menuItems = [
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -63,6 +65,9 @@ export default function Navigation() {
 
             {/* Launch App Button */}
             <motion.button
+              onClick={() => {
+                router.push("/leaderboard");
+              }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-mainBlue text-white px-8 py-2.5 rounded-full font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg shadow-mainBlue/25"

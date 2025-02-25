@@ -3,17 +3,21 @@ import { Search, X } from "lucide-react";
 import Header from "@/components/Header";
 import { Metadata } from "next";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [searchValue, setSearchValue] = useState("");
+  const router = useRouter();
 
   const handleClear = () => setSearchValue("");
-  const handleSearch = () => console.log("Searching:", searchValue);
+  const handleSearch = () => {
+    router.push(`/profile/${searchValue}`);
+  };
 
   return (
     <main className=" m-auto	 flex min-h-screen flex-col items-center px-24 py-8">
       <Header />
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen  flex items-center justify-center ">
         <div className="w-full max-w-lg space-y-8 text-center">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold text-gray-900">

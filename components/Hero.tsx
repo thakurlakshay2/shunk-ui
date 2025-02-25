@@ -1,9 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useLayoutEffect, useState } from "react";
 
 const colorBlue = { color: "#2563eb" };
 export default function Hero() {
+  const [screenHeight, setScreenHeight] = useState(0);
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    setScreenHeight(window.innerHeight);
+  }, []);
   return (
     <div className="min-h-dvh	 flex items-center justify-center">
       <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,6 +46,9 @@ export default function Hero() {
             </motion.button>
 
             <motion.button
+              onClick={() => {
+                window.scrollBy({ top: screenHeight, behavior: "smooth" });
+              }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               style={{ ...colorBlue, borderColor: "#2563eb" }}
