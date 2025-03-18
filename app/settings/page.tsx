@@ -64,7 +64,8 @@ export default function SettingsPage() {
   return (
     <main className=" m-auto	 flex min-h-screen flex-col items-center px-24 py-8">
       <Header />
-      <div className="min-h-screen bg-gray-100 text-black flex flex-col items-center p-10">
+      {/* code inrovement required , very un utilised space right now */}
+      {/* <div className="min-h-screen bg-gray-100 text-black flex flex-col items-center p-10">
         <div className="w-full max-w-3xl bg-white shadow-xl rounded-lg p-6">
           <div className="flex justify-between border-b border-gray-300 mb-6">
             {tabs.map((tab) => (
@@ -96,7 +97,7 @@ export default function SettingsPage() {
             {tabContent[activeTab]}
           </motion.div>
         </div>
-      </div>
+      </div> */}
     </main>
   );
 }
