@@ -16,8 +16,6 @@ import { Modal } from "@/shared/Modal";
 import Skeleton from "@/shared/Skeleton";
 import { Stepper, StepperInterface } from "@/shared/Stepper/index";
 import Tooltip from "@/shared/Tooltip";
-import { useContract } from "@thirdweb-dev/react";
-import axios from "axios";
 import { FastAverageColor } from "fast-average-color";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -181,10 +179,11 @@ export const CoinList: React.FC<CoinListProps> = ({ coinData }) => {
   const [step, setStep] = useState<number>(1);
   const [isCreatingContract, setIsCreatingContract] = useState<boolean>(false);
 
-  const { contract, isLoading, isError } = useContract(
-    CONTRACT_ADDRESS,
-    ShunkFactoryABI
-  );
+  const { contract, isLoading, isError } = {
+    contract: "1",
+    isLoading: true,
+    isError: false,
+  };
   const [contractContent, setContractContent] =
     useState<ContractInfo>(defaultContractInfo);
   const [itemsContent, setItemContent] = useState<Item[]>([]);
@@ -447,13 +446,13 @@ export const CoinList: React.FC<CoinListProps> = ({ coinData }) => {
       const tokenSymbol = "YTN";
 
       // Call the createToken function
-      const result = await contract.call("createToken", [
-        tokenName,
-        tokenSymbol,
-        initStrategy,
-      ]);
+      // const result = await contract.call("createToken", [
+      //   tokenName,
+      //   tokenSymbol,
+      //   initStrategy,
+      // ]);
 
-      console.log("Token created successfully:", result);
+      // console.log("Token created successfully:", result);
     } catch (error) {
       console.error("Error creating token:", error);
     }
