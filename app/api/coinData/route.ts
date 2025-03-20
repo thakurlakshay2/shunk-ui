@@ -1,5 +1,6 @@
 import axios from "@/shared/axios";
 import { NextResponse } from "next/server";
+import dummyCoinData from "./const";
 
 export interface CoinData {
   _id: string;
@@ -35,14 +36,14 @@ export interface CoinData {
 }
 
 export async function GET() {
-  const response = await axios<CoinData[]>({
-    url: "https://shunk-service-production.up.railway.app/tokens",
-    headers: {
-      "Content-Type": "application/json",
-      accept: "application/json",
-    },
-    method: "GET",
-  });
+  // const response = await axios<CoinData[]>({
+  //   url: "https://shunk-service-production.up.railway.app/tokens",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     accept: "application/json",
+  //   },
+  //   method: "GET",
+  // });
 
-  return NextResponse.json(response.data);
+  return NextResponse.json(dummyCoinData);
 }
