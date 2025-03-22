@@ -22,7 +22,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Item, PercentageDistributor } from "../../PercentageDistributor";
 import Checkbox from "../../primitives/Checkbox";
 import ProfitLoss from "../../shared/ProfitLoss";
-import { ShunkFactoryABI } from "../CONTRACT_ABI";
 import useByobValidation from "@/hooks/useByobValidation";
 
 export interface ContractInfo {

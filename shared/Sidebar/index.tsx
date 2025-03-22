@@ -10,7 +10,9 @@ export interface SidebarMenuItems {
   name: React.ReactNode;
   redirection?: string;
   lottieIcon: string;
+  subOptions?: SidebarMenuItems[];
 }
+
 const MENU_ITEMS: SidebarMenuItems[] = [
   {
     id: 1,
@@ -20,21 +22,49 @@ const MENU_ITEMS: SidebarMenuItems[] = [
   },
   {
     id: 2,
-    name: "BYOB",
-    redirection: "/byob",
+    name: "Converters",
+    redirection: "/converters",
     lottieIcon: AssetsImg.ic_packs,
+    subOptions: [
+      {
+        id: 1,
+        name: "Image To PDF",
+        redirection: "/imgToPdf",
+        lottieIcon: AssetsImg.ic_home,
+      },
+      {
+        id: 2,
+        name: "Pdf To Image",
+        redirection: "/pdfToImage",
+        lottieIcon: AssetsImg.ic_home,
+      },
+    ],
   },
   {
     id: 3,
-    name: "Leaderboard",
-    redirection: "/leaderboard",
+    name: "PayUrFren",
+    redirection: "/payurfren",
     lottieIcon: AssetsImg.ic_leaderboard,
   },
   {
     id: 4,
-    name: "Portfolio",
-    redirection: "/portfolio/invested",
+    name: "Calculators",
+    redirection: "/calculators",
     lottieIcon: AssetsImg.ic_portfolio,
+    subOptions: [
+      {
+        id: 1,
+        name: "SIP",
+        redirection: "/calculators/sip",
+        lottieIcon: AssetsImg.ic_home,
+      },
+      {
+        id: 2,
+        name: "SWP",
+        redirection: "/calculators/swp",
+        lottieIcon: AssetsImg.ic_home,
+      },
+    ],
   },
 ];
 const SETTINGS_ITEM: SidebarMenuItems[] = [
@@ -83,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({}) => {
           <span
             className={`font-silkscreen text-3xl transition-opacity duration-400 ease-in-out `}
           >
-            {isCollapsed ? "S" : "SHUNK"}
+            {isCollapsed ? "S" : "SuperApp"}
           </span>
         </div>
         <div

@@ -27,7 +27,7 @@ export default function Header({ goBack }: HeaderProps) {
           <div className="flex justify-between items-center py-4 gap-4">
             <div>
               <Link href="/">
-                <span className="font-silkscreen text-3xl">Shunk</span>
+                <span className="font-silkscreen text-3xl">SuperApp</span>
               </Link>
             </div>
 

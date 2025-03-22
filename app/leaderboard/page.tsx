@@ -32,7 +32,7 @@ export default function Strategy() {
   useEffect(() => {
     const getCoinList = async () => {
       const response = await axios.get<CoinData[]>(
-        "https://api.shunk.io/tokens",
+        "https://api.superapp.io/tokens",
         {
           headers: {
             "Content-Type": "application/json",

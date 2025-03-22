@@ -23,22 +23,22 @@ const features = [
 const FAQquestions = [
   {
     content: "testing coneoaihawiodjaoiwjdilahwdoai hda dawojd akw haoi oia",
-    heading: "What is Shunk?",
+    heading: "What is SuperApp?",
   },
   {
     content:
       "Velvet Capital provides all the necessary infrastructure to create & manage DeFi products. Velvet is like your own personal smart contract factory - every time a vault manager creates a vault, a new series of custom smart contracts gets deployed, each product is independent and is entirely created & managed by the vault manager. We do not take custody of your assets.",
-    heading: "How Does Shunk.io work?",
+    heading: "How Does SuperApp.io work?",
   },
   {
     content:
       "Velvet Capital is focused on building a Professional-Grade Operating System for DeFi that makes creating new DeFi products easier than ever. We are currently live on BNB Chain & Arbitrum and will be supporting more chains over time. View our roadmap here.",
-    heading: "What is next for Shunk.io?",
+    heading: "What is next for SuperApp.io?",
   },
   {
     content:
       "Velvet Capital is focused on building a Professional-Grade Operating System for DeFi that makes creating new DeFi products easier than ever. We are currently live on BNB Chain & Arbitrum and will be supporting more chains over time. View our roadmap here.",
-    heading: "What is Shunk DAO & How Do I Join?",
+    heading: "What is SuperApp DAO & How Do I Join?",
   },
   {
     heading: "How do i create my own Bag?",

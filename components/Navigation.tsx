@@ -8,9 +8,16 @@ import { useEffect, useState } from "react";
 
 const menuItems = [
   { title: "Home", href: "/" },
-  { title: "Byob", href: "/byob" },
-  { title: "Leaderboard", href: "/leaderboard" },
-  { title: "Portfolio", href: "/portfolio/invested" },
+  {
+    title: "Converters",
+    href: "/converters",
+    subOptions: [
+      { title: "Image To PDF", href: "/imgToPdf" },
+      { title: "Pdf To Image", href: "/pdfToImage" },
+    ],
+  },
+  { title: "PayUrFren", href: "/payurfren" },
+  { title: "Calculators", href: "/calculators" },
 ];
 
 export default function Navigation() {
@@ -37,7 +44,7 @@ export default function Navigation() {
             href={"/"}
             className=" cursor-pointer text-3xl text-mainBlue font-silkscreen"
           >
-            Shunk
+            SuperApp
           </Link>
 
           {/* Desktop Menu */}
