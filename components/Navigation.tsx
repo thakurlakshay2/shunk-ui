@@ -16,7 +16,7 @@ const menuItems = [
       { title: "Pdf To Image", href: "/pdfToImage" },
     ],
   },
-  { title: "PayUrFren", href: "/payurfren" },
+  { title: "PayUrFren", href: "/payUrFren" },
   { title: "Calculators", href: "/calculators" },
 ];
 

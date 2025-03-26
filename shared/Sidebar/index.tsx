@@ -43,7 +43,7 @@ const MENU_ITEMS: SidebarMenuItems[] = [
   {
     id: 3,
     name: "PayUrFren",
-    redirection: "/payurfren",
+    redirection: "/payUrFren",
     lottieIcon: AssetsImg.ic_leaderboard,
   },
   {
