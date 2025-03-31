@@ -6,7 +6,7 @@ const frames = createFrames({
 });
 const handleRequest = frames(async () => {
   return {
-    image: <span>SHUNK - Decentralised AMC</span>,
+    image: <span>SUPER - Decentralised AMC</span>,
     buttons: [<Button action="link" target={"https://www.google.com"}>Click me</Button>],
   };
 });
